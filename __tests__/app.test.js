@@ -31,3 +31,14 @@ describe("/api/categories", () => {
     return request(app).get("/api/categorieeeees").expect(404);
   });
 });
+
+describe("/api/reviews/:review_id", () => {
+  test("GET: should respond with a 200 status code and expected single review", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+      });
+  });
+});
