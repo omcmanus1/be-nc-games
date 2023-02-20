@@ -5,9 +5,6 @@ const app = express();
 const { errorHandler500 } = require("./controllers/error-handling-controllers");
 const { getCategories } = require("./controllers/categories-controllers");
 
-app.use(express.json());
-app.use((req, res, next) => next());
-
 app.get("/api/categories", getCategories);
 
 app.use(errorHandler500);
