@@ -6,10 +6,10 @@ exports.selectReviews = () => {
     reviews.review_img_url, reviews.created_at, reviews.votes, 
     reviews.designer, COUNT(comments.body) AS comment_count
   FROM reviews
-  INNER JOIN comments
+  LEFT JOIN comments
   ON reviews.review_id = comments.review_id
   GROUP BY reviews.review_id
-  ORDER BY reviews.created_at
+  ORDER BY reviews.created_at DESC
   `;
   return db.query(queryString).then((reviews) => reviews.rows);
 };
