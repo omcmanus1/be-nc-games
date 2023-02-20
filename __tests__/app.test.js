@@ -46,7 +46,7 @@ describe("/api/categories", () => {
         // });
       });
   });
-  test("GET: should respond with a 400 error if incorrect endpoint is specified", () => {
+  test("GET: should respond with a 404 error if incorrect endpoint is specified", () => {
     return request(app).get("/api/categorieeeees").expect(404);
   });
 });
