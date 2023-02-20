@@ -14,7 +14,7 @@ exports.selectReviews = () => {
   return db.query(queryString).then((reviews) => reviews.rows);
 };
 
-exports.selectSingleReview = () => {
+exports.selectSingleReview = (reviewId) => {
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
@@ -22,5 +22,5 @@ exports.selectSingleReview = () => {
   FROM reviews
   WHERE reviews.review_id = $1
   `;
-  return db.query(queryString,)
+  return db.query(queryString, [reviewId]).then((review) => review.rows);
 };

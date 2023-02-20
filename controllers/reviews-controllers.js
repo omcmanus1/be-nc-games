@@ -10,9 +10,15 @@ exports.getReviews = (req, res, next) => {
 };
 
 exports.getSingleReview = (req, res, next) => {
-  const { reviewId } = query.params;
-  console.log(reviewId);
-  selectSingleReview()
-    .then((review) => res.status(200).send({ review }))
-    .catch((err) => next(err));
+  const { id } = req.params;
+  selectSingleReview(id)
+    .then((review) => {
+      if (review.length === 0) {
+        return Promise.reject({ status: 404, msg: "invalid ID provided" });
+      }
+      return res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
