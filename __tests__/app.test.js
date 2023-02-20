@@ -55,6 +55,7 @@ describe("/api/reviews", () => {
         reviews.forEach((review) => {
           expect(review).toMatchObject(reviewOutput);
         });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
