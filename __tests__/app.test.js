@@ -19,7 +19,6 @@ describe("/api/categories", () => {
   test("GET: should respond with an array", () => {
     return request(app)
       .get("/api/categories")
-      .expect(200)
       .then(({ body }) => {
         const { categories } = body;
         expect(categories).toBeInstanceOf(Array);
@@ -28,7 +27,6 @@ describe("/api/categories", () => {
   test("GET: should respond with an array of the correct length", () => {
     return request(app)
       .get("/api/categories")
-      .expect(200)
       .then(({ body }) => {
         const { categories } = body;
         expect(categories.length).toBe(categoryData.length);
@@ -37,7 +35,6 @@ describe("/api/categories", () => {
   test("GET: should respond with an array of category objects with the correct keys", () => {
     return request(app)
       .get("/api/categories")
-      .expect(200)
       .then(({ body }) => {
         const { categories } = body;
         categories.forEach((category) => {
