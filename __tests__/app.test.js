@@ -31,3 +31,14 @@ describe("/api/categories", () => {
     return request(app).get("/api/categorieeeees").expect(404);
   });
 });
+
+describe("/api/reviews", () => {
+  test.only("GET: should respond with a 200 status code, and correctly formatted data", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+      });
+  });
+});
