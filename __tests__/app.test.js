@@ -39,6 +39,22 @@ describe("/api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews.length).toBe(reviewData.length);
+        const reviewOutput = {
+          owner: expect.any(String),
+          title: expect.any(String),
+          review_id: expect.any(Number),
+          category: expect.any(String),
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          designer: expect.any(String),
+          comment_count: expect.any(String),
+        };
+        reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+        });
       });
   });
 });
