@@ -2,15 +2,9 @@ exports.nonExistentPath404 = (req, res, next) => {
   res.status(404).send({ msg: "Path Not Found" });
 };
 
-exports.errorHandler400 = (err, req, res, next) => {
-  if (err === "Invalid ID provided") {
-    res.status(400).send({ msg: err });
-  } else next(err);
-};
-
-exports.errorHandler404 = (err, req, res, next) => {
-  if (err === "ID not found") {
-    res.status(404).send({ msg: err });
+exports.customErrorHandler = (err, req, res, next) => {
+  if (err.msg === "Invalid ID provided" || "ID not found") {
+    res.status(err.status_code).send({ msg: err.msg });
   } else next(err);
 };
 

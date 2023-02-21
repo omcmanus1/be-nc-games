@@ -16,7 +16,7 @@ exports.selectReviews = () => {
 
 exports.selectSingleReview = (reviewId) => {
   if (isNaN(Number(reviewId))) {
-    return Promise.reject("Invalid ID provided");
+    return Promise.reject({ status_code: 400, msg: "Invalid ID provided" });
   }
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,

@@ -7,6 +7,7 @@ const {
   errorHandler500,
   errorHandler404,
   errorHandler400,
+  customErrorHandler,
 } = require("./controllers/error-handling-controllers");
 const { getCategories } = require("./controllers/categories-controllers");
 const {
@@ -20,8 +21,7 @@ app.get("/api/reviews/:id", getSingleReview);
 
 app.use(nonExistentPath404);
 
-app.use(errorHandler400);
-app.use(errorHandler404);
+app.use(customErrorHandler);
 app.use(errorHandler500);
 
 module.exports = app;
