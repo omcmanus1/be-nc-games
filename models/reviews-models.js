@@ -15,6 +15,9 @@ exports.selectReviews = () => {
 };
 
 exports.selectSingleReview = (reviewId) => {
+  if (isNaN(Number(reviewId))) {
+    return Promise.reject("Invalid ID provided");
+  }
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
@@ -22,5 +25,8 @@ exports.selectSingleReview = (reviewId) => {
   FROM reviews
   WHERE reviews.review_id = $1
   `;
-  return db.query(queryString, [reviewId]).then((review) => review.rows);
+  return db
+    .query(queryString, [reviewId])
+    .then((review) => review.rows)
+    .catch((err) => next(err));
 };

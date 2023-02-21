@@ -37,6 +37,34 @@ describe("/api/categories", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  test("GET: should respond with a 200 status code, and correctly formatted data", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews.length).toBe(reviewData.length);
+        const reviewOutput = {
+          owner: expect.any(String),
+          title: expect.any(String),
+          review_id: expect.any(Number),
+          category: expect.any(String),
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          designer: expect.any(String),
+          comment_count: expect.any(String),
+        };
+        reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+        });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
 describe("/api/reviews/:id", () => {
   test("GET: should respond with an array containing correct single review object", () => {
     return request(app)
@@ -61,40 +89,20 @@ describe("/api/reviews/:id", () => {
         expect(review[0].review_id).toBe(2);
       });
   });
-  test("GET: should respond with 404 if qeuried with invalid ID", () => {
+  test("GET: should respond with 404 if qeuried with valid but non-existent ID", () => {
     return request(app)
       .get("/api/reviews/234455")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Not Found");
+        expect(response.body.msg).toBe("ID not found");
       });
   });
-});
-
-describe("/api/reviews", () => {
-  test.only("GET: should respond with a 200 status code, and correctly formatted data", () => {
+  test("GET: should respond with 400 if qeuried with invalid ID", () => {
     return request(app)
-      .get("/api/reviews")
-      .expect(200)
-      .then(({ body }) => {
-        const { reviews } = body;
-        expect(reviews).toBeInstanceOf(Array);
-        expect(reviews.length).toBe(reviewData.length);
-        const reviewOutput = {
-          owner: expect.any(String),
-          title: expect.any(String),
-          review_id: expect.any(Number),
-          category: expect.any(String),
-          review_img_url: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          designer: expect.any(String),
-          comment_count: expect.any(String),
-        };
-        reviews.forEach((review) => {
-          expect(review).toMatchObject(reviewOutput);
-        });
-        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      .get("/api/reviews/mushrooms")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid ID provided");
       });
   });
 });

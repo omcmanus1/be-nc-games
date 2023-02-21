@@ -3,9 +3,10 @@ const express = require("express");
 const app = express();
 
 const {
+  nonExistentPath404,
   errorHandler500,
   errorHandler404,
-  nonExistentPath404,
+  errorHandler400,
 } = require("./controllers/error-handling-controllers");
 const { getCategories } = require("./controllers/categories-controllers");
 const {
@@ -19,6 +20,7 @@ app.get("/api/reviews/:id", getSingleReview);
 
 app.use(nonExistentPath404);
 
+app.use(errorHandler400);
 app.use(errorHandler404);
 app.use(errorHandler500);
 
