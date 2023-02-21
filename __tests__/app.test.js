@@ -12,8 +12,19 @@ const {
 beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
 
+describe("Error Handling", () => {
+  test("GET: should respond with a 404 error if incorrect endpoint is specified", () => {
+    return request(app)
+      .get("/api/categorieeeees")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Path Not Found");
+      });
+  });
+});
+
 describe("/api/categories", () => {
-  test("GET: should respond with a 200 status code, and expected object", () => {
+  test("GET: should respond with 200 status code and correctly formatted objects array", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -28,18 +39,10 @@ describe("/api/categories", () => {
         });
       });
   });
-  test("GET: should respond with a 404 error if incorrect endpoint is specified", () => {
-    return request(app)
-      .get("/api/categorieeeees")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("Path Not Found");
-      });
-  });
 });
 
 describe("/api/reviews", () => {
-  test("GET: should respond with a 200 status code, and correctly formatted data", () => {
+  test("GET: should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
