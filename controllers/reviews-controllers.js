@@ -13,7 +13,7 @@ exports.getSingleReview = (req, res, next) => {
   const { id } = req.params;
   selectSingleReview(id)
     .then((review) => {
-      if (review.length === 0) {
+      if (review.rows.length === 0) {
         return Promise.reject("ID not found");
       }
       return res.status(200).send({ review });

@@ -13,7 +13,7 @@ beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
 
 describe("/api/categories", () => {
-  test.only("GET: should respond with a 200 status code, and expected object", () => {
+  test("GET: should respond with a 200 status code, and expected object", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -45,8 +45,10 @@ describe("/api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews).toBeInstanceOf(Array);
-        expect(reviews.length).toBe(reviewData.length);
+        expect(reviews).toBeInstanceOf(Object);
+        const reviewArray = reviews.rows;
+        expect(reviewArray).toBeInstanceOf(Array);
+        expect(reviewArray.length).toBe(reviewData.length);
         const reviewOutput = {
           owner: expect.any(String),
           title: expect.any(String),
@@ -58,10 +60,10 @@ describe("/api/reviews", () => {
           designer: expect.any(String),
           comment_count: expect.any(String),
         };
-        reviews.forEach((review) => {
+        reviewArray.forEach((review) => {
           expect(review).toMatchObject(reviewOutput);
         });
-        expect(reviews).toBeSortedBy("created_at", { descending: true });
+        expect(reviewArray).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -73,8 +75,9 @@ describe("/api/reviews/:id", () => {
       .expect(200)
       .then(({ body }) => {
         const { review } = body;
-        expect(review).toBeInstanceOf(Array);
-        expect(review.length).toBe(1);
+        expect(review).toBeInstanceOf(Object);
+        const reviewArray = review.rows;
+        expect(reviewArray.length).toBe(1);
         const reviewTemplate = {
           review_id: expect.any(Number),
           title: expect.any(String),
@@ -86,8 +89,8 @@ describe("/api/reviews/:id", () => {
           owner: expect.any(String),
           created_at: expect.any(String),
         };
-        expect(review[0]).toMatchObject(reviewTemplate);
-        expect(review[0].review_id).toBe(2);
+        expect(reviewArray[0]).toMatchObject(reviewTemplate);
+        expect(reviewArray[0].review_id).toBe(2);
       });
   });
   test("GET: should respond with 404 if qeuried with valid but non-existent ID", () => {

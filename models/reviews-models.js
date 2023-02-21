@@ -11,7 +11,7 @@ exports.selectReviews = () => {
   GROUP BY reviews.review_id
   ORDER BY reviews.created_at DESC
   `;
-  return db.query(queryString).then((reviews) => reviews.rows);
+  return db.query(queryString).then((reviews) => reviews);
 };
 
 exports.selectSingleReview = (reviewId) => {
@@ -27,6 +27,6 @@ exports.selectSingleReview = (reviewId) => {
   `;
   return db
     .query(queryString, [reviewId])
-    .then((review) => review.rows)
+    .then((review) => review)
     .catch((err) => next(err));
 };
