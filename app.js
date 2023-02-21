@@ -13,8 +13,6 @@ const {
   getSingleReview,
 } = require("./controllers/reviews-controllers");
 
-app.use((req, res, next) => next());
-
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:id", getSingleReview);

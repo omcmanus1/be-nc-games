@@ -14,7 +14,7 @@ exports.getSingleReview = (req, res, next) => {
   selectSingleReview(id)
     .then((review) => {
       if (review.length === 0) {
-        return Promise.reject({ status: 404, msg: "invalid ID provided" });
+        return Promise.reject({ status: 404, msg: "ID not found" });
       }
       return res.status(200).send({ review });
     })

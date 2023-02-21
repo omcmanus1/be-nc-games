@@ -31,7 +31,9 @@ describe("/api/categories", () => {
     return request(app)
       .get("/api/categorieeeees")
       .expect(404)
-      .then((response) => console.log(response.body));
+      .then((response) => {
+        expect(response.body.msg).toBe("Path Not Found");
+      });
   });
 });
 
@@ -61,7 +63,7 @@ describe("/api/reviews/:id", () => {
   });
   test("GET: should respond with 404 if qeuried with invalid ID", () => {
     return request(app)
-      .get("/api/reviews/56777")
+      .get("/api/reviews/234455")
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Not Found");
