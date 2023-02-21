@@ -11,5 +11,22 @@ exports.selectReviews = () => {
   GROUP BY reviews.review_id
   ORDER BY reviews.created_at DESC
   `;
-  return db.query(queryString).then((reviews) => reviews.rows);
+  return db.query(queryString).then((reviews) => reviews);
+};
+
+exports.selectSingleReview = (reviewId) => {
+  if (isNaN(Number(reviewId))) {
+    return Promise.reject({ status_code: 400, msg: "Invalid ID provided" });
+  }
+  const queryString = `
+  SELECT reviews.review_id, reviews.title, reviews.review_body,
+    reviews.designer, reviews.review_img_url, reviews.votes, 
+    reviews.category, reviews.owner, reviews.created_at
+  FROM reviews
+  WHERE reviews.review_id = $1
+  `;
+  return db
+    .query(queryString, [reviewId])
+    .then((review) => review)
+    .catch((err) => next(err));
 };
