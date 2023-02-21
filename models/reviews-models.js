@@ -11,7 +11,7 @@ exports.selectReviews = () => {
   GROUP BY reviews.review_id
   ORDER BY reviews.created_at DESC
   `;
-  return db.query(queryString).then((reviews) => reviews);
+  return db.query(queryString).then((reviews) => reviews.rows);
 };
 
 exports.selectSingleReview = (reviewId) => {
@@ -27,6 +27,18 @@ exports.selectSingleReview = (reviewId) => {
   `;
   return db
     .query(queryString, [reviewId])
-    .then((review) => review)
+    .then((review) => review.rows)
+    .catch((err) => next(err));
+};
+
+exports.selectReviewComments = (reviewId) => {
+  const queryString = `
+  SELECT comment_id, votes, created_at, author, body, review_id
+  FROM comments
+  WHERE review_id = $1
+  `;
+  return db
+    .query(queryString, [reviewId])
+    .then((comments) => comments.rows)
     .catch((err) => next(err));
 };
