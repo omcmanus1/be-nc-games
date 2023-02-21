@@ -5,6 +5,7 @@ const app = express();
 const {
   errorHandler500,
   errorHandler404,
+  nonExistentPath404,
 } = require("./controllers/error-handling-controllers");
 const { getCategories } = require("./controllers/categories-controllers");
 const {
@@ -12,12 +13,13 @@ const {
   getSingleReview,
 } = require("./controllers/reviews-controllers");
 
-app.use(express.json());
 app.use((req, res, next) => next());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:id", getSingleReview);
+
+app.use(nonExistentPath404);
 
 app.use(errorHandler404);
 app.use(errorHandler500);

@@ -28,11 +28,14 @@ describe("/api/categories", () => {
       });
   });
   test("GET: should respond with a 404 error if incorrect endpoint is specified", () => {
-    return request(app).get("/api/categorieeeees").expect(404);
+    return request(app)
+      .get("/api/categorieeeees")
+      .expect(404)
+      .then((response) => console.log(response.body));
   });
 });
 
-describe.only("/api/reviews/:id", () => {
+describe("/api/reviews/:id", () => {
   test("GET: should respond with an array containing correct single review object", () => {
     return request(app)
       .get("/api/reviews/2")
@@ -56,7 +59,7 @@ describe.only("/api/reviews/:id", () => {
         expect(review[0].review_id).toBe(2);
       });
   });
-  test("GET: should respond with 400 if qeuried with invalid ID", () => {
+  test("GET: should respond with 404 if qeuried with invalid ID", () => {
     return request(app)
       .get("/api/reviews/56777")
       .expect(404)
