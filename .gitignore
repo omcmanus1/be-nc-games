@@ -1,3 +1,5 @@
 node_modules
 .env.*
 INSTRUCTIONS.md
+scratch.*
+sql-output.txt
