@@ -3,7 +3,7 @@ exports.nonExistentPath404 = (req, res, next) => {
 };
 
 exports.customErrorHandler = (err, req, res, next) => {
-  if (err.msg === "Invalid ID provided" || "ID not found") {
+  if (err) {
     res.status(err.status_code).send({ msg: err.msg });
   } else next(err);
 };
