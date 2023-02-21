@@ -13,15 +13,16 @@ beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
 
 describe("/api/categories", () => {
-  test("GET: should respond with a 200 status code, and expected array data", () => {
+  test.only("GET: should respond with a 200 status code, and expected object", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
         const { categories } = body;
-        expect(categories).toBeInstanceOf(Array);
-        expect(categories.length).toBe(categoryData.length);
-        categories.forEach((category) => {
+        expect(categories).toBeInstanceOf(Object);
+        expect(categories.rows).toBeInstanceOf(Array);
+        expect(categories.rows.length).toBe(categoryData.length);
+        categories.rows.forEach((category) => {
           expect(category).toHaveProperty("slug");
           expect(category).toHaveProperty("description");
         });
