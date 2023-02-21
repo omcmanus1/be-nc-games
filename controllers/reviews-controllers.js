@@ -2,6 +2,7 @@ const {
   selectReviews,
   selectSingleReview,
   selectReviewComments,
+  selectReviewId,
 } = require("../models/reviews-models");
 
 exports.getReviews = (req, res, next) => {
@@ -24,7 +25,11 @@ exports.getSingleReview = (req, res, next) => {
 
 exports.getReviewComments = (req, res, next) => {
   const { review_id } = req.params;
-  selectReviewComments(review_id)
-    .then((comments) => res.status(200).send({ comments }))
+  const checkReviewIdExists = selectReviewId(review_id);
+  const fetchRelevantComments = selectReviewComments(review_id);
+  Promise.all([checkReviewIdExists, fetchRelevantComments])
+    .then((comments) => {
+      res.status(200).send({ comments: comments[1] });
+    })
     .catch((err) => next(err));
 };

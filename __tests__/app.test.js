@@ -118,20 +118,44 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
         const { comments } = body;
-        // expect(review).toBeInstanceOf(Object);
-        // const reviewArray = review.rows;
-        // expect(reviewArray.length).toBe(1);
-        // const reviewTemplate = {
-        //   comment_id: expect.any(Number),
-        //   votes: expect.any(Number),
-        //   created_at: expect.any(String),
-        //   author: expect.any(String),
-        //   body: expect.any(String),
-        //   review_id: expect.any(Number),
-        // };
-        // expect(reviewArray[0]).toMatchObject(reviewTemplate);
-        // expect(reviewArray[0].review_id).toBe(2);
+        const reviewTemplate = {
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          review_id: expect.any(Number),
+        };
+        comments.forEach((comment) =>
+          expect(comment).toMatchObject(reviewTemplate)
+        );
+        expect(comments[0].review_id).toBe(2);
+      });
+  });
+  test("should respond with 404 if qeuried with valid but non-existent ID", () => {
+    return request(app)
+      .get("/api/reviews/234455/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Review ID not found");
+      });
+  });
+  test("should respond with 400 if qeuried with invalid ID", () => {
+    return request(app)
+      .get("/api/reviews/mushrooms/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid ID provided");
+      });
+  });
+  test("should respond with 200 and an empty object if queried with valid ID but no comments exist", () => {
+    return request(app)
+      .get("/api/reviews/11/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({ comments: [] });
       });
   });
 });
