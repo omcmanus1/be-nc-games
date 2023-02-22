@@ -99,7 +99,7 @@ describe("GET: /api/reviews/:review_id", () => {
       .get("/api/reviews/234455")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("ID not found");
+        expect(response.body.message).toBe("Review ID not found");
       });
   });
   test("should respond with 400 if qeuried with invalid ID", () => {
@@ -107,7 +107,7 @@ describe("GET: /api/reviews/:review_id", () => {
       .get("/api/reviews/mushrooms")
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid ID provided");
+        expect(response.body.message).toBe("Invalid review ID provided");
       });
   });
 });
@@ -139,7 +139,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/234455/comments")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Review ID not found");
+        expect(response.body.message).toBe("Sorry, review ID not found");
       });
   });
   test("should respond with 400 if qeuried with invalid ID", () => {
@@ -147,7 +147,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/mushrooms/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid ID provided");
+        expect(response.body.message).toBe("Invalid review ID provided");
       });
   });
   test("should respond with 200 and an empty object if queried with valid ID but no comments exist", () => {
@@ -160,7 +160,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("POST: /api/reviews/:review_id/comments", () => {
+describe("POST: /api/reviews/:review_id/comments", () => {
   test("should respond with 201 and posted comment object", () => {
     return request(app)
       .post("/api/reviews/2/comments")
@@ -168,7 +168,6 @@ describe.only("POST: /api/reviews/:review_id/comments", () => {
       .expect(201)
       .then((response) => {
         const commentObj = response.body;
-        console.log(commentObj.comment[0]);
         expect(commentObj).toBeInstanceOf(Object);
         expect(commentObj).toHaveProperty("comment");
         expect(commentObj.comment.length).toBe(1);
@@ -181,6 +180,26 @@ describe.only("POST: /api/reviews/:review_id/comments", () => {
           created_at: expect.any(String),
         };
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
+      });
+  });
+  test("should respond with 404 if queried with valid but non-existent review ID", () => {
+    return request(app)
+      .post("/api/reviews/4234234/comments")
+      .send({ username: "bainesface", body: "Not epic at all" })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe("Sorry, review ID not found");
+      });
+  });
+  test("should respond with 400 if qeuried with invalid ID", () => {
+    return request(app)
+      .post("/api/reviews/mushrooms/comments")
+      .send({ username: "bainesface", body: "Not epic at all" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          message: "Invalid review ID provided",
+        });
       });
   });
 });

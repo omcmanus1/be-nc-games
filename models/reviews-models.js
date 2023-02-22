@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const idNumberChecker = require("./utils");
+const { idNumberChecker, checkIdExists } = require("./utils");
 
 exports.selectReviews = () => {
   const queryString = `
@@ -16,7 +16,12 @@ exports.selectReviews = () => {
 };
 
 exports.selectSingleReview = (reviewId) => {
-  idNumberChecker(reviewId);
+  if (isNaN(Number(reviewId))) {
+    return Promise.reject({
+      status_code: 400,
+      message: `Invalid review ID provided`,
+    });
+  }
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
@@ -24,27 +29,36 @@ exports.selectSingleReview = (reviewId) => {
   FROM reviews
   WHERE reviews.review_id = $1
   `;
-  return db
-    .query(queryString, [reviewId])
-    .then((review) => review.rows)
-    .catch((err) => next(err));
+  return db.query(queryString, [reviewId]).then((review) => {
+    return review.rows;
+  });
 };
 
 exports.selectReviewComments = (reviewId) => {
-  idNumberChecker(reviewId);
+  if (isNaN(Number(reviewId))) {
+    return Promise.reject({
+      status_code: 400,
+      message: `Invalid review ID provided`,
+    });
+  }
   const queryString = `
   SELECT comment_id, votes, created_at, author, body, review_id
   FROM comments
   WHERE review_id = $1
   `;
-  return db.query(queryString, [reviewId]).then((comments) => comments.rows);
+  return db.query(queryString, [reviewId]).then((comments) => {
+    return comments.rows;
+  });
 };
 
 exports.selectReviewId = (reviewId) => {
   const queryString = `SELECT * FROM reviews WHERE review_id = $1`;
   return db.query(queryString, [reviewId]).then((reviewCheck) => {
     if (reviewCheck.rowCount === 0) {
-      return Promise.reject({ status_code: 404, msg: "Review ID not found" });
+      return Promise.reject({
+        status_code: 404,
+        message: `Sorry, review ID not found`,
+      });
     }
     return reviewCheck.rows;
   });
