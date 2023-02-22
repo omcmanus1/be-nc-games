@@ -63,3 +63,15 @@ exports.selectReviewId = (reviewId) => {
     return reviewCheck.rows;
   });
 };
+
+exports.updateReviewData = (reviewId, increment) => {
+  const queryString = `
+  UPDATE reviews
+  SET 
+    votes = votes + $1
+  WHERE review_id = $2
+  RETURNING *
+  `;
+  const queryParams = [increment, reviewId];
+  return db.query(queryString, queryParams).then((review) => review.rows);
+};

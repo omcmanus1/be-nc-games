@@ -3,6 +3,7 @@ const {
   selectSingleReview,
   selectReviewComments,
   selectReviewId,
+  updateReviewData,
 } = require("../models/reviews-models");
 
 exports.getReviews = (req, res, next) => {
@@ -37,3 +38,10 @@ exports.getReviewComments = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+exports.patchSingleReview = (req, res, next) => {
+  const { review_id } = req.params;
+  const { inc_votes } = req.body;
+  updateReviewData(review_id, inc_votes)
+    .then((review) => res.status(200).send({ review }))
+    .catch((err) => next(err));
+};
