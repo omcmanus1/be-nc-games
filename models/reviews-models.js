@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const idNumberChecker = require("./utils");
 
 exports.selectReviews = () => {
   const queryString = `
@@ -15,9 +16,7 @@ exports.selectReviews = () => {
 };
 
 exports.selectSingleReview = (reviewId) => {
-  if (isNaN(Number(reviewId))) {
-    return Promise.reject({ status_code: 400, msg: "Invalid ID provided" });
-  }
+  idNumberChecker(reviewId);
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
@@ -32,9 +31,7 @@ exports.selectSingleReview = (reviewId) => {
 };
 
 exports.selectReviewComments = (reviewId) => {
-  if (isNaN(Number(reviewId))) {
-    return Promise.reject({ status_code: 400, msg: "Invalid ID provided" });
-  }
+  idNumberChecker(reviewId);
   const queryString = `
   SELECT comment_id, votes, created_at, author, body, review_id
   FROM comments
