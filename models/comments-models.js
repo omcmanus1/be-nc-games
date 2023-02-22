@@ -20,3 +20,16 @@ exports.insertSingleComment = (commentObj, reviewId) => {
     return comment.rows;
   });
 };
+
+exports.selectUser = (username) => {
+  const queryString = "SELECT * FROM reviews WHERE owner = $1";
+  return db.query(queryString, [username]).then((userCheck) => {
+    if (userCheck.rowCount === 0) {
+      return Promise.reject({
+        status_code: 404,
+        message: `Sorry, user ID not found`,
+      });
+    }
+    return userCheck.rows;
+  });
+};

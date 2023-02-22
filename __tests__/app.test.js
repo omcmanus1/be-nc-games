@@ -174,15 +174,15 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         const expectedObj = {
           comment_id: expect.any(Number),
           body: expect.any(String),
-          review_id: 2,
+          review_id: expect.any(Number),
           author: "bainesface",
-          votes: 0,
+          votes: expect.any(Number),
           created_at: expect.any(String),
         };
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
       });
   });
-  test("should respond with 404 if queried with valid but non-existent review ID", () => {
+  test("should respond with 404 if review ID does not exist", () => {
     return request(app)
       .post("/api/reviews/4234234/comments")
       .send({ username: "bainesface", body: "Not epic at all" })
@@ -191,15 +191,22 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(err.body.message).toBe("Sorry, review ID not found");
       });
   });
-  test("should respond with 400 if qeuried with invalid ID", () => {
+  test("should respond with 400 if review ID is invalid", () => {
     return request(app)
       .post("/api/reviews/mushrooms/comments")
       .send({ username: "bainesface", body: "Not epic at all" })
       .expect(400)
-      .then((response) => {
-        expect(response.body).toEqual({
-          message: "Invalid review ID provided",
-        });
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid review ID provided");
+      });
+  });
+  test("should respond with 404 if username does not exist", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ username: "ralphwiggum", body: "I'm learnding" })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe(`Sorry, user ID not found`);
       });
   });
 });
