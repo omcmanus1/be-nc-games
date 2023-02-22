@@ -159,3 +159,28 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("POST: /api/reviews/:review_id/comments", () => {
+  test("should respond with 201 and posted comment object", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ username: "bainesface", body: "Not epic at all" })
+      .expect(201)
+      .then((response) => {
+        const commentObj = response.body;
+        console.log(commentObj.comment[0]);
+        expect(commentObj).toBeInstanceOf(Object);
+        expect(commentObj).toHaveProperty("comment");
+        expect(commentObj.comment.length).toBe(1);
+        const expectedObj = {
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          review_id: 2,
+          author: "bainesface",
+          votes: 0,
+          created_at: expect.any(String),
+        };
+        expect(commentObj.comment[0]).toMatchObject(expectedObj);
+      });
+  });
+});
