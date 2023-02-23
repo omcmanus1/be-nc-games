@@ -14,6 +14,7 @@ const {
   getReviews,
   getSingleReview,
   getReviewComments,
+  patchSingleReview,
 } = require("./controllers/reviews-controllers");
 const { postSingleComment } = require("./controllers/comments-controllers");
 
@@ -25,6 +26,8 @@ app.get("/api/reviews/:review_id", getSingleReview);
 app.get("/api/reviews/:review_id/comments", getReviewComments);
 
 app.post("/api/reviews/:review_id/comments", postSingleComment);
+
+app.patch("/api/reviews/:review_id", patchSingleReview);
 
 app.use(nonExistentPath404);
 

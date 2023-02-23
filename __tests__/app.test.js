@@ -245,3 +245,107 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("PATCH: /api/reviews/:review_id", () => {
+  test("should return 200 and the updated review object when passed a valid positive increment", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 4 })
+      .expect(200)
+      .then((review) => {
+        const reviewObj = review.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj).toHaveProperty("review");
+        expect(reviewObj.review.length).toBe(1);
+        const expectedOutput = {
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        };
+        expect(reviewObj.review[0]).toMatchObject(expectedOutput);
+        expect(reviewObj.review[0].votes).toBe(9);
+      });
+  });
+  test("should decrement the votes when passed a negative increment", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: -40 })
+      .expect(200)
+      .then((review) => {
+        const reviewObj = review.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj).toHaveProperty("review");
+        expect(reviewObj.review.length).toBe(1);
+        const expectedOutput = {
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: -35,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        };
+        expect(reviewObj.review[0]).toMatchObject(expectedOutput);
+      });
+  });
+  test("should respond with 201 and expected output if given extra properties", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 4, faveTrick: "kickflip" })
+      .expect(200)
+      .then((review) => {
+        const reviewObj = review.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj).toHaveProperty("review");
+        expect(reviewObj.review.length).toBe(1);
+        const expectedOutput = {
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        };
+        expect(reviewObj.review[0]).toMatchObject(expectedOutput);
+        expect(reviewObj.review[0]).not.toHaveProperty("review");
+      });
+  });
+  test("should respond with 400 if required property is missing", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ increase_by: 4 })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid request format");
+      });
+  });
+  test("should respond with 404 if review ID does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/90023")
+      .send({ inc_votes: 4 })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe(`Sorry, review ID not found`);
+      });
+  });
+  test.only("should respond with 400 if review ID is invalid", () => {
+    return request(app)
+      .patch("/api/reviews/mushrooms")
+      .send({ inc_votes: 4 })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe(`Invalid ID provided`);
+      });
+  });
+});
