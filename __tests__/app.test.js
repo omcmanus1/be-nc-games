@@ -23,6 +23,27 @@ describe("Error Handling", () => {
   });
 });
 
+describe("GET: /api/users", () => {
+  test("should respond with 200 and expected users object", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((users) => {
+        const usersObj = users.body;
+        expect(usersObj).toBeInstanceOf(Object);
+        expect(usersObj.users.length).toBe(userData.length);
+        const expectedOutput = {
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String),
+        };
+        usersObj.users.forEach((user) =>
+          expect(user).toMatchObject(expectedOutput)
+        );
+      });
+  });
+});
+
 describe("GET: /api/categories", () => {
   test("should respond with 200 status code and correctly formatted objects array", () => {
     return request(app)
