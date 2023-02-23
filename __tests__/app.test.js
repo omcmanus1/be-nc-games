@@ -212,7 +212,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
 });
 
 describe.only("PATCH: /api/reviews/:review_id", () => {
-  test("should return 200 and the updated review object", () => {
+  test("should return 200 and the updated review object when passed a valid positive increment", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ inc_votes: 4 })
@@ -235,6 +235,31 @@ describe.only("PATCH: /api/reviews/:review_id", () => {
         };
         expect(reviewObj.review[0]).toMatchObject(expectedOutput);
         expect(reviewObj.review[0].votes).toBe(9);
+      });
+  });
+  test("should decrement the votes when passed a negative increment", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: -4 })
+      .expect(200);
+    // .then((review) => {});
+  });
+  test("should respond with 404 if review ID does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/90023")
+      .send({ inc_votes: 4 })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe(`Sorry, review ID not found`);
+      });
+  });
+  test("should respond with 400 if review ID is invalid", () => {
+    return request(app)
+      .patch("/api/reviews/mushrooms")
+      .send({ inc_votes: 4 })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe(`Invalid review ID provided`);
       });
   });
 });

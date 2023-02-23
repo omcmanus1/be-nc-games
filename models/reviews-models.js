@@ -65,6 +65,12 @@ exports.selectReviewId = (reviewId) => {
 };
 
 exports.updateReviewData = (reviewId, increment) => {
+  if (isNaN(Number(reviewId))) {
+    return Promise.reject({
+      status_code: 400,
+      message: `Invalid review ID provided`,
+    });
+  }
   const queryString = `
   UPDATE reviews
   SET 
@@ -73,5 +79,13 @@ exports.updateReviewData = (reviewId, increment) => {
   RETURNING *
   `;
   const queryParams = [increment, reviewId];
-  return db.query(queryString, queryParams).then((review) => review.rows);
+  return db.query(queryString, queryParams).then((review) => {
+    if (review.rowCount === 0) {
+      return Promise.reject({
+        status_code: 404,
+        message: `Sorry, review ID not found`,
+      });
+    }
+    return review.rows;
+  });
 };
