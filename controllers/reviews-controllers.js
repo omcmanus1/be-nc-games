@@ -16,7 +16,10 @@ exports.getSingleReview = (req, res, next) => {
   selectSingleReview(review_id)
     .then((review) => {
       if (review.length === 0) {
-        return Promise.reject({ status_code: 404, msg: "ID not found" });
+        return Promise.reject({
+          status_code: 404,
+          message: "Review ID not found",
+        });
       }
       return res.status(200).send({ review });
     })
@@ -33,3 +36,4 @@ exports.getReviewComments = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
