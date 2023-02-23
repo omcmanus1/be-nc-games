@@ -8,6 +8,13 @@ exports.insertSingleComment = (commentObj, reviewId) => {
       message: `Invalid review ID provided`,
     });
   }
+  const requiredProperties = ["username", "body"];
+  if (!requiredProperties.every((prop) => commentObj.hasOwnProperty(prop))) {
+    return Promise.reject({
+      status_code: 400,
+      message: `Invalid comment submitted`,
+    });
+  }
   const queryString = `
   INSERT INTO comments 
     (body, review_id, author)

@@ -174,12 +174,47 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         const expectedObj = {
           comment_id: expect.any(Number),
           body: expect.any(String),
-          review_id: expect.any(Number),
+          review_id: 2,
           author: "bainesface",
           votes: expect.any(Number),
           created_at: expect.any(String),
         };
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
+      });
+  });
+  test("should respond with 201 and correct output if body has additional properties", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({
+        username: "bainesface",
+        body: "Not epic at all",
+        height: 2000,
+        faveColour: "grey",
+      })
+      .expect(201)
+      .then((response) => {
+        const commentObj = response.body;
+        expect(commentObj).toBeInstanceOf(Object);
+        expect(commentObj).toHaveProperty("comment");
+        expect(commentObj.comment.length).toBe(1);
+        const expectedObj = {
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          review_id: 2,
+          author: "bainesface",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        };
+        expect(commentObj.comment[0]).toMatchObject(expectedObj);
+      });
+  });
+  test("should respond with 400 if body is missing required properties", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ author: "pingu", review: "alright" })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid comment submitted");
       });
   });
   test("should respond with 404 if review ID does not exist", () => {
