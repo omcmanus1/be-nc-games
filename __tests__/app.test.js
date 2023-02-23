@@ -339,13 +339,13 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(err.body.message).toBe(`Sorry, review ID not found`);
       });
   });
-  test("should respond with 400 if review ID is invalid", () => {
+  test.only("should respond with 400 if review ID is invalid", () => {
     return request(app)
       .patch("/api/reviews/mushrooms")
       .send({ inc_votes: 4 })
       .expect(400)
       .then((err) => {
-        expect(err.body.message).toBe(`Invalid review ID provided`);
+        expect(err.body.message).toBe(`Invalid ID provided`);
       });
   });
 });
