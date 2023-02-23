@@ -253,7 +253,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "Not epic at all" })
       .expect(400)
       .then((err) => {
-        expect(err.body.message).toBe("Invalid review ID provided");
+        expect(err.body.message).toBe("Invalid ID provided");
       });
   });
   test("should respond with 404 if username does not exist", () => {

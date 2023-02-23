@@ -2,12 +2,6 @@ const db = require("../db/connection");
 const { checkIdExists } = require("./utils");
 
 exports.insertSingleComment = (commentObj, reviewId) => {
-  if (isNaN(Number(reviewId))) {
-    return Promise.reject({
-      status_code: 400,
-      message: `Invalid review ID provided`,
-    });
-  }
   const requiredProperties = ["username", "body"];
   if (!requiredProperties.every((prop) => commentObj.hasOwnProperty(prop))) {
     return Promise.reject({

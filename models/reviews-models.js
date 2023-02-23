@@ -16,12 +16,6 @@ exports.selectReviews = () => {
 };
 
 exports.selectSingleReview = (reviewId) => {
-  // if (isNaN(Number(reviewId))) {
-  //   return Promise.reject({
-  //     status_code: 400,
-  //     message: `Invalid review ID provided`,
-  //   });
-  // }
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
