@@ -16,12 +16,6 @@ exports.selectReviews = () => {
 };
 
 exports.selectSingleReview = (reviewId) => {
-  if (isNaN(Number(reviewId))) {
-    return Promise.reject({
-      status_code: 400,
-      message: `Invalid review ID provided`,
-    });
-  }
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
@@ -35,12 +29,6 @@ exports.selectSingleReview = (reviewId) => {
 };
 
 exports.selectReviewComments = (reviewId) => {
-  if (isNaN(Number(reviewId))) {
-    return Promise.reject({
-      status_code: 400,
-      message: `Invalid review ID provided`,
-    });
-  }
   const queryString = `
   SELECT comment_id, votes, created_at, author, body, review_id
   FROM comments
@@ -65,12 +53,6 @@ exports.selectReviewId = (reviewId) => {
 };
 
 exports.updateReviewData = (reviewId, increment) => {
-  // if (isNaN(Number(reviewId))) {
-  //   return Promise.reject({
-  //     status_code: 400,
-  //     message: `Invalid review ID provided`,
-  //   });
-  // }
   if (!increment) {
     return Promise.reject({
       status_code: 400,
@@ -85,15 +67,13 @@ exports.updateReviewData = (reviewId, increment) => {
   RETURNING *
   `;
   const queryParams = [increment, reviewId];
-  return db
-    .query(queryString, queryParams)
-    .then((review) => {
-      if (review.rowCount === 0) {
-        return Promise.reject({
-          status_code: 404,
-          message: `Sorry, review ID not found`,
-        });
-      }
-      return review.rows;
-    })
+  return db.query(queryString, queryParams).then((review) => {
+    if (review.rowCount === 0) {
+      return Promise.reject({
+        status_code: 404,
+        message: `Sorry, review ID not found`,
+      });
+    }
+    return review.rows;
+  });
 };

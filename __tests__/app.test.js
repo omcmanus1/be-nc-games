@@ -128,7 +128,7 @@ describe("GET: /api/reviews/:review_id", () => {
       .get("/api/reviews/mushrooms")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Invalid review ID provided");
+        expect(response.body.message).toBe("Invalid ID provided");
       });
   });
 });
@@ -168,7 +168,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/mushrooms/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Invalid review ID provided");
+        expect(response.body.message).toBe("Invalid ID provided");
       });
   });
   test("should respond with 200 and an empty object if queried with valid ID but no comments exist", () => {
@@ -253,7 +253,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "Not epic at all" })
       .expect(400)
       .then((err) => {
-        expect(err.body.message).toBe("Invalid review ID provided");
+        expect(err.body.message).toBe("Invalid ID provided");
       });
   });
   test("should respond with 404 if username does not exist", () => {
@@ -360,7 +360,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(err.body.message).toBe(`Sorry, review ID not found`);
       });
   });
-  test.only("should respond with 400 if review ID is invalid", () => {
+  test("should respond with 400 if review ID is invalid", () => {
     return request(app)
       .patch("/api/reviews/mushrooms")
       .send({ inc_votes: 4 })
