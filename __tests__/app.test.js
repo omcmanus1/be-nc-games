@@ -89,6 +89,15 @@ describe("GET: /api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test.only("should respond with expected object when queried with relevant category", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then((reviews) => {
+        expect(reviews.body).toBeInstanceOf(Object);
+        expect(reviews.body.reviews.length).toBe(11);
+      });
+  });
 });
 
 describe("GET: /api/reviews/:review_id", () => {
