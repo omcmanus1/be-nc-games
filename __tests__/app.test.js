@@ -63,7 +63,7 @@ describe("GET: /api/categories", () => {
 });
 
 describe("GET: /api/reviews", () => {
-  test("should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
+  test.only("should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -89,7 +89,7 @@ describe("GET: /api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test.only("should respond with expected object when queried with relevant category", () => {
+  test("should respond with expected object when queried with relevant category", () => {
     return request(app)
       .get("/api/reviews?category=social+deduction")
       .expect(200)

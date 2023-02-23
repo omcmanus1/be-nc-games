@@ -1,6 +1,7 @@
 const db = require("../db/connection");
 
 exports.selectReviews = (category) => {
+  const queryParams = [];
   let queryString = `
   SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category,
   reviews.review_img_url, reviews.created_at, reviews.votes, 
@@ -9,14 +10,14 @@ exports.selectReviews = (category) => {
   LEFT JOIN comments
   ON reviews.review_id = comments.review_id
   `;
-  if (!category) {
-    queryString += `WHERE reviews.category IS NOT NULL`;
-  } else queryString += `WHERE reviews.category = $1`;
-
-  queryString += ` GROUP BY reviews.review_id
+  if (category) {
+    queryString += `WHERE reviews.category = $1
+  `;
+    queryParams.push(category);
+  }
+  queryString += `GROUP BY reviews.review_id
   ORDER BY reviews.created_at DESC
   `;
-  const queryParams = [category];
   return db.query(queryString, queryParams).then((reviews) => reviews.rows);
 };
 
