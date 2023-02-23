@@ -71,6 +71,12 @@ exports.updateReviewData = (reviewId, increment) => {
       message: `Invalid review ID provided`,
     });
   }
+  if (!increment) {
+    return Promise.reject({
+      status_code: 400,
+      message: `Invalid request format`,
+    });
+  }
   const queryString = `
   UPDATE reviews
   SET 
