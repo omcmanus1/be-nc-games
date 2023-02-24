@@ -152,12 +152,12 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with 400 if queried with invalid category", () => {
+  test("should respond with 204 if category has no reviews associated", () => {
     return request(app)
       .get("/api/reviews?category=mushrooms")
-      .expect(400)
-      .then((reviews) => {
-        expect(reviews.body.message).toBe("Category does not exist");
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe("No reviews for this category");
       });
   });
   test("should respond with 400 if queried with invalid order", () => {

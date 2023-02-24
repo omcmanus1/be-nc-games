@@ -33,8 +33,8 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   return db.query(sql, queryParams).then((reviews) => {
     if (reviews.rows.length === 0) {
       return Promise.reject({
-        status_code: 400,
-        message: "Category does not exist",
+        status_code: 404,
+        message: "No reviews for this category",
       });
     }
     return reviews.rows;
