@@ -2,6 +2,16 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "users": [
+      {
+        "username": "tickle122",
+        "name": "Tom Tickle",
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+      }
+    ]
+    },
   "GET /api/categories": {
     "description": "serves an array of all categories",
     "queries": [],

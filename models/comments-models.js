@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { checkIdExists } = require("./utils");
+const { checkIdExists } = require("../utils/utils");
 
 exports.insertSingleComment = (commentObj, reviewId) => {
   const requiredProperties = ["username", "body"];
