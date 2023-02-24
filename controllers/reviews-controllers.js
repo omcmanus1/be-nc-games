@@ -4,11 +4,17 @@ const {
   selectReviewComments,
   selectReviewId,
   updateReviewData,
+  checkAvailableCategories,
 } = require("../models/reviews-models");
 
 exports.getReviews = (req, res, next) => {
-  selectReviews()
-    .then((reviews) => res.status(200).send({ reviews }))
+  let { category, sort_by, order } = req.query;
+  checkAvailableCategories(category)
+    .then((category) => {
+      selectReviews(category, sort_by, order)
+        .then((reviews) => res.status(200).send({ reviews }))
+        .catch((err) => next(err));
+    })
     .catch((err) => next(err));
 };
 
