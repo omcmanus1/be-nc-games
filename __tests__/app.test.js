@@ -152,12 +152,20 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with 204 if category has no reviews associated", () => {
+  test("should respond with 404 if category has no reviews associated", () => {
     return request(app)
-      .get("/api/reviews?category=mushrooms")
+      .get("/api/reviews?category=children's+games")
       .expect(404)
       .then((err) => {
         expect(err.body.message).toBe("No reviews for this category");
+      });
+  });
+  test("should respond with 400 if queried with invalid category field", () => {
+    return request(app)
+      .get("/api/reviews?category=mushrooms")
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("Category does not exist");
       });
   });
   test("should respond with 400 if queried with invalid order", () => {

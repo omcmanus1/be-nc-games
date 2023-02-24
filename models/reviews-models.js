@@ -3,12 +3,17 @@ const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
 
-const getAvailableCategories = () => {
-  return selectCategories()
-    .then((categories) => {
-      return categories.map((category) => category.slug);
-    })
-    .catch((err) => next(err));
+exports.checkAvailableCategories = (queryCat) => {
+  return selectCategories().then((categories) => {
+    availableCategories = categories.map((category) => category.slug);
+    if (queryCat && !availableCategories.includes(queryCat)) {
+      return Promise.reject({
+        status_code: 400,
+        message: "Category does not exist",
+      });
+    }
+    return queryCat;
+  });
 };
 
 exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
