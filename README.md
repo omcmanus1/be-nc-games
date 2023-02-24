@@ -1,4 +1,4 @@
-# Northcoders House of Games API
+# NC GAMES: Board Games Rating App
 
 ## Background
 
