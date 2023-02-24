@@ -136,7 +136,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with correctly filtered and sorted object when specified", () => {
+  test("should respond with correct output when given category & sort_by", () => {
     return request(app)
       .get("/api/reviews?category=dexterity&sort_by=votes")
       .expect(200)
@@ -152,6 +152,37 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
+  test("should respond with correct output when given cateory & sort_order", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity&order=asc")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+          expect(review.category).toBe("dexterity");
+        });
+        expect(reviewObj.reviews).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+      });
+  });
+  test("should respond with correct output when given sort_by & sort_order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes&order=asc")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+        });
+        expect(reviewObj.reviews).toBeSortedBy("votes", {
+          ascending: true,
+        });
+      });
+  });
   test("should respond with 404 if category has no reviews associated", () => {
     return request(app)
       .get("/api/reviews?category=children's+games")
@@ -160,10 +191,10 @@ describe("GET: /api/reviews", () => {
         expect(err.body.message).toBe("No reviews for this category");
       });
   });
-  test("should respond with 400 if queried with invalid category field", () => {
+  test("should respond with 404 if queried with invalid category field", () => {
     return request(app)
       .get("/api/reviews?category=mushrooms")
-      .expect(400)
+      .expect(404)
       .then((err) => {
         expect(err.body.message).toBe("Category does not exist");
       });

@@ -8,7 +8,7 @@ exports.checkAvailableCategories = (queryCat) => {
     availableCategories = categories.map((category) => category.slug);
     if (queryCat && !availableCategories.includes(queryCat)) {
       return Promise.reject({
-        status_code: 400,
+        status_code: 404,
         message: "Category does not exist",
       });
     }
