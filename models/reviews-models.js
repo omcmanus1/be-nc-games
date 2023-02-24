@@ -1,24 +1,44 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
-exports.selectReviews = (category) => {
+const { selectCategories } = require("./categories-models");
+
+const getAvailableCategories = () => {
+  return selectCategories()
+    .then((categories) => {
+      return categories.map((category) => category.slug);
+    })
+    .catch((err) => next(err));
+};
+
+exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   const queryParams = [];
   let queryString = `
-  SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category,
-  reviews.review_img_url, reviews.created_at, reviews.votes, 
-  reviews.designer, COUNT(comments.body) AS comment_count
-  FROM reviews
-  LEFT JOIN comments
-  ON reviews.review_id = comments.review_id
-  `;
+    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category,
+    reviews.review_img_url, reviews.created_at, reviews.votes, 
+    reviews.designer, COUNT(comments.body) AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_id = comments.review_id`;
   if (category) {
-    queryString += `WHERE reviews.category = $1
-  `;
+    queryString += `
+    WHERE reviews.category = $1`;
     queryParams.push(category);
   }
-  queryString += `GROUP BY reviews.review_id
-  ORDER BY reviews.created_at DESC
-  `;
-  return db.query(queryString, queryParams).then((reviews) => reviews.rows);
+  queryString += `
+    GROUP BY reviews.review_id
+    ORDER BY reviews.%s `;
+  queryString += `%s`;
+  const sql = format(queryString, sort_by, order);
+  return db.query(sql, queryParams).then((reviews) => {
+    if (reviews.rows.length === 0) {
+      return Promise.reject({
+        status_code: 400,
+        message: "Category does not exist",
+      });
+    }
+    return reviews.rows;
+  });
 };
 
 exports.selectSingleReview = (reviewId) => {

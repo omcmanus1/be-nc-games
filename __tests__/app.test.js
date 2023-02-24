@@ -63,7 +63,18 @@ describe("GET: /api/categories", () => {
 });
 
 describe("GET: /api/reviews", () => {
-  test.only("should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
+  const reviewOutput = {
+    owner: expect.any(String),
+    title: expect.any(String),
+    review_id: expect.any(Number),
+    category: expect.any(String),
+    review_img_url: expect.any(String),
+    created_at: expect.any(String),
+    votes: expect.any(Number),
+    designer: expect.any(String),
+    comment_count: expect.any(String),
+  };
+  test("should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -72,17 +83,6 @@ describe("GET: /api/reviews", () => {
         const { reviews } = body;
         expect(reviews).toBeInstanceOf(Array);
         expect(reviews.length).toBe(reviewData.length);
-        const reviewOutput = {
-          owner: expect.any(String),
-          title: expect.any(String),
-          review_id: expect.any(Number),
-          category: expect.any(String),
-          review_img_url: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          designer: expect.any(String),
-          comment_count: expect.any(String),
-        };
         reviews.forEach((review) => {
           expect(review).toMatchObject(reviewOutput);
         });
@@ -94,8 +94,86 @@ describe("GET: /api/reviews", () => {
       .get("/api/reviews?category=social+deduction")
       .expect(200)
       .then((reviews) => {
-        expect(reviews.body).toBeInstanceOf(Object);
-        expect(reviews.body.reviews.length).toBe(11);
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj.reviews.length).toBe(11);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+          expect(review.category).toBe("social deduction");
+        });
+        expect(reviewObj.reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("should respond with correctly sorted object when specified", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+        });
+        expect(reviewObj.reviews).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test("should respond with object sorted by date ascending if specified", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+        });
+        expect(reviewObj.reviews).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+      });
+  });
+  test("should respond with correctly filtered and sorted object when specified", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity&sort_by=votes")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+          expect(review.category).toBe("dexterity");
+        });
+        expect(reviewObj.reviews).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test("should respond with 400 if queried with invalid category", () => {
+    return request(app)
+      .get("/api/reviews?category=mushrooms")
+      .expect(400)
+      .then((reviews) => {
+        expect(reviews.body.message).toBe("Category does not exist");
+      });
+  });
+  test("should respond with 400 if queried with invalid order", () => {
+    return request(app)
+      .get("/api/reviews?order=sideways")
+      .expect(400)
+      .then((reviews) => {
+        expect(reviews.body.message).toBe("Invalid input provided");
+      });
+  });
+  test("should respond with 400 if queried with invalid sort_by field", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=pencils")
+      .expect(400)
+      .then((reviews) => {
+        expect(reviews.body.message).toBe("Invalid input provided");
       });
   });
 });
