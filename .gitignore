@@ -3,3 +3,4 @@ node_modules
 INSTRUCTIONS.md
 scratch.*
 sql-output.*
+error-handling.md
