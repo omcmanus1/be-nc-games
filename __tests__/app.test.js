@@ -227,7 +227,7 @@ describe("GET: /api/reviews/:review_id", () => {
         const { review } = body;
         expect(review.length).toBe(1);
         const reviewTemplate = {
-          review_id: expect.any(Number),
+          review_id: 2,
           title: expect.any(String),
           review_body: expect.any(String),
           designer: expect.any(String),
@@ -236,9 +236,9 @@ describe("GET: /api/reviews/:review_id", () => {
           category: expect.any(String),
           owner: expect.any(String),
           created_at: expect.any(String),
+          comment_count: "3",
         };
         expect(review[0]).toMatchObject(reviewTemplate);
-        expect(review[0].review_id).toBe(2);
       });
   });
   test("should respond with 404 if qeuried with valid but non-existent ID", () => {

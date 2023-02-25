@@ -21,7 +21,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   let queryString = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category,
     reviews.review_img_url, reviews.created_at, reviews.votes, 
-    reviews.designer, COUNT(comments.body) AS comment_count
+    reviews.designer, COUNT(comments.comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments
     ON reviews.review_id = comments.review_id`;
@@ -50,9 +50,13 @@ exports.selectSingleReview = (reviewId) => {
   const queryString = `
   SELECT reviews.review_id, reviews.title, reviews.review_body,
     reviews.designer, reviews.review_img_url, reviews.votes, 
-    reviews.category, reviews.owner, reviews.created_at
-  FROM reviews
+    reviews.category, reviews.owner, reviews.created_at,
+    COUNT(comments.comment_id) AS comment_count
+  FROM reviews 
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
   WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
   `;
   return db.query(queryString, [reviewId]).then((review) => {
     return review.rows;
