@@ -496,3 +496,11 @@ describe("PATCH: /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe.only("DELETE: /api/comments/:comment_id", () => {
+  test("should return 204 (no content) and delete single comment by given ID", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+    // .then((response) => {
+    // });
+  });
+});

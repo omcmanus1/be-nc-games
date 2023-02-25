@@ -34,3 +34,8 @@ exports.selectUser = (username) => {
     return userCheck.rows;
   });
 };
+
+exports.deleteSingleComment = (commentId) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1`;
+  return db.query(queryString, [commentId]);
+};
