@@ -74,7 +74,7 @@ exports.selectReviewComments = (reviewId) => {
   });
 };
 
-exports.selectReviewId = (reviewId) => {
+exports.selectReviewById = (reviewId) => {
   const queryString = `SELECT * FROM reviews WHERE review_id = $1`;
   return db.query(queryString, [reviewId]).then((reviewCheck) => {
     if (reviewCheck.rowCount === 0) {
