@@ -6,6 +6,7 @@ const {
   errorHandler500,
   customErrorHandler,
 } = require("./controllers/error-handling-controllers");
+const { getEndpoints } = require("./controllers/endpoints-controllers");
 const { getCategories } = require("./controllers/categories-controllers");
 const {
   getReviews,
@@ -21,6 +22,7 @@ const { getUsers } = require("./controllers/users-controllers");
 
 app.use(express.json());
 
+app.get("/api", getEndpoints);
 app.get("/api/users", getUsers);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);

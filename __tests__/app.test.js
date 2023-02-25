@@ -8,6 +8,7 @@ const {
   reviewData,
   userData,
 } = require("../db/data/test-data");
+const endpoints = require("../utils/endpoints.json");
 
 beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
@@ -19,6 +20,17 @@ describe("Generic Error Handling", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.message).toBe("Path Not Found");
+      });
+  });
+});
+
+describe("GET: /api", () => {
+  test("should return a 200, and a JSON object with documentation for all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(endpoints);
       });
   });
 });
