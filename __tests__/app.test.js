@@ -8,23 +8,35 @@ const {
   reviewData,
   userData,
 } = require("../db/data/test-data");
+const endpoints = require("../utils/endpoints.json");
 
 beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
 
-describe("Error Handling", () => {
-  test("should respond with a 404 error if incorrect endpoint is specified", () => {
+describe("Generic Error Handling", () => {
+  test("should respond with 404 code if incorrect endpoint is specified", () => {
     return request(app)
       .get("/api/categorieeeees")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Path Not Found");
+        expect(response.body.message).toBe("Path Not Found");
+      });
+  });
+});
+
+describe("GET: /api", () => {
+  test("should respond with 200 code and a JSON object with documentation for all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(endpoints);
       });
   });
 });
 
 describe("GET: /api/users", () => {
-  test("should respond with 200 and expected users object", () => {
+  test("should respond with 200 code and expected users object", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -45,7 +57,7 @@ describe("GET: /api/users", () => {
 });
 
 describe("GET: /api/categories", () => {
-  test("should respond with 200 status code and correctly formatted objects array", () => {
+  test("should respond with 200 code and correctly formatted objects array", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -74,7 +86,7 @@ describe("GET: /api/reviews", () => {
     designer: expect.any(String),
     comment_count: expect.any(String),
   };
-  test("should respond with a 200 status code, and correctly formatted/sorted objects array", () => {
+  test("should respond with 200 code and correctly formatted/sorted objects array", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -89,7 +101,7 @@ describe("GET: /api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("should respond with expected object when queried with relevant category", () => {
+  test("should respond with an expected category object when 'category' is specified", () => {
     return request(app)
       .get("/api/reviews?category=social+deduction")
       .expect(200)
@@ -106,7 +118,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with correctly sorted object when specified", () => {
+  test("should respond with a correctly sorted object when 'sort_by' is specified", () => {
     return request(app)
       .get("/api/reviews?sort_by=votes")
       .expect(200)
@@ -121,7 +133,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with object sorted by date ascending if specified", () => {
+  test("should respond with an object sorted by date ascending when 'order' is specified", () => {
     return request(app)
       .get("/api/reviews?order=asc")
       .expect(200)
@@ -136,7 +148,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with correct output when given category & sort_by", () => {
+  test("should respond with the correct output when 'category' & 'sort_by' are specified", () => {
     return request(app)
       .get("/api/reviews?category=dexterity&sort_by=votes")
       .expect(200)
@@ -152,7 +164,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with correct output when given cateory & sort_order", () => {
+  test("should respond with correct output when 'category' & 'order' are specified", () => {
     return request(app)
       .get("/api/reviews?category=dexterity&order=asc")
       .expect(200)
@@ -168,7 +180,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with correct output when given sort_by & sort_order", () => {
+  test("should respond with correct output when 'sort_by' & 'order' are specified", () => {
     return request(app)
       .get("/api/reviews?sort_by=votes&order=asc")
       .expect(200)
@@ -183,7 +195,7 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
-  test("should respond with 404 if category has no reviews associated", () => {
+  test("should respond with 404 code if category has no reviews associated", () => {
     return request(app)
       .get("/api/reviews?category=children's+games")
       .expect(404)
@@ -191,7 +203,7 @@ describe("GET: /api/reviews", () => {
         expect(err.body.message).toBe("No reviews for this category");
       });
   });
-  test("should respond with 404 if queried with invalid category field", () => {
+  test("should respond with 404 code if queried with invalid 'category' field", () => {
     return request(app)
       .get("/api/reviews?category=mushrooms")
       .expect(404)
@@ -199,7 +211,7 @@ describe("GET: /api/reviews", () => {
         expect(err.body.message).toBe("Category does not exist");
       });
   });
-  test("should respond with 400 if queried with invalid order", () => {
+  test("should respond with 400 code if queried with invalid 'order'", () => {
     return request(app)
       .get("/api/reviews?order=sideways")
       .expect(400)
@@ -207,7 +219,7 @@ describe("GET: /api/reviews", () => {
         expect(reviews.body.message).toBe("Invalid input provided");
       });
   });
-  test("should respond with 400 if queried with invalid sort_by field", () => {
+  test("should respond with 400 code if queried with invalid 'sort_by' field", () => {
     return request(app)
       .get("/api/reviews?sort_by=pencils")
       .expect(400)
@@ -218,7 +230,7 @@ describe("GET: /api/reviews", () => {
 });
 
 describe("GET: /api/reviews/:review_id", () => {
-  test("should respond with array property containing correct single review object", () => {
+  test("should respond with 200 code and array property containing correct single review object", () => {
     return request(app)
       .get("/api/reviews/2")
       .expect(200)
@@ -241,7 +253,7 @@ describe("GET: /api/reviews/:review_id", () => {
         expect(review[0]).toMatchObject(reviewTemplate);
       });
   });
-  test("should respond with 404 if qeuried with valid but non-existent ID", () => {
+  test("should respond with 404 code if qeuried with valid but non-existent ID", () => {
     return request(app)
       .get("/api/reviews/234455")
       .expect(404)
@@ -249,7 +261,7 @@ describe("GET: /api/reviews/:review_id", () => {
         expect(response.body.message).toBe("Review ID not found");
       });
   });
-  test("should respond with 400 if qeuried with invalid ID", () => {
+  test("should respond with 400 code if qeuried with invalid ID", () => {
     return request(app)
       .get("/api/reviews/mushrooms")
       .expect(400)
@@ -260,7 +272,7 @@ describe("GET: /api/reviews/:review_id", () => {
 });
 
 describe("GET: /api/reviews/:review_id/comments", () => {
-  test("should respond with array property of multiple comment objects", () => {
+  test("should respond with 200 code and array property of multiple comment objects", () => {
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
@@ -281,7 +293,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
         expect(comments[0].review_id).toBe(2);
       });
   });
-  test("should respond with 404 if qeuried with valid but non-existent ID", () => {
+  test("should respond with 404 code if qeuried with valid but non-existent ID", () => {
     return request(app)
       .get("/api/reviews/234455/comments")
       .expect(404)
@@ -289,7 +301,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
         expect(response.body.message).toBe("Sorry, review ID not found");
       });
   });
-  test("should respond with 400 if qeuried with invalid ID", () => {
+  test("should respond with 400 code if qeuried with invalid ID", () => {
     return request(app)
       .get("/api/reviews/mushrooms/comments")
       .expect(400)
@@ -297,7 +309,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
         expect(response.body.message).toBe("Invalid ID provided");
       });
   });
-  test("should respond with 200 and an empty object if queried with valid ID but no comments exist", () => {
+  test("should respond with 200 code and an empty object if queried with valid ID but no comments exist", () => {
     return request(app)
       .get("/api/reviews/11/comments")
       .expect(200)
@@ -308,7 +320,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
 });
 
 describe("POST: /api/reviews/:review_id/comments", () => {
-  test("should respond with 201 and posted comment object", () => {
+  test("should respond with 201 code and posted comment object", () => {
     return request(app)
       .post("/api/reviews/2/comments")
       .send({ username: "bainesface", body: "Not epic at all" })
@@ -329,7 +341,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
       });
   });
-  test("should respond with 201 and correct output if body has additional properties", () => {
+  test("should respond with 201 code and correct output if body has additional properties", () => {
     return request(app)
       .post("/api/reviews/2/comments")
       .send({
@@ -355,7 +367,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
       });
   });
-  test("should respond with 400 if body is missing required properties", () => {
+  test("should respond with 400 code if body is missing required properties", () => {
     return request(app)
       .post("/api/reviews/2/comments")
       .send({ author: "pingu", review: "alright" })
@@ -364,7 +376,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(err.body.message).toBe("Invalid comment submitted");
       });
   });
-  test("should respond with 404 if review ID does not exist", () => {
+  test("should respond with 404 code if review ID does not exist", () => {
     return request(app)
       .post("/api/reviews/4234234/comments")
       .send({ username: "bainesface", body: "Not epic at all" })
@@ -373,7 +385,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(err.body.message).toBe("Sorry, review ID not found");
       });
   });
-  test("should respond with 400 if review ID is invalid", () => {
+  test("should respond with 400 code if review ID is invalid", () => {
     return request(app)
       .post("/api/reviews/mushrooms/comments")
       .send({ username: "bainesface", body: "Not epic at all" })
@@ -382,7 +394,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(err.body.message).toBe("Invalid ID provided");
       });
   });
-  test("should respond with 404 if username does not exist", () => {
+  test("should respond with 404 code if username does not exist", () => {
     return request(app)
       .post("/api/reviews/2/comments")
       .send({ username: "ralphwiggum", body: "I'm learnding" })
@@ -394,7 +406,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
 });
 
 describe("PATCH: /api/reviews/:review_id", () => {
-  test("should return 200 and the updated review object when passed a valid positive increment", () => {
+  test("should respond with 200 code and the updated review object when passed a valid positive increment", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ inc_votes: 4 })
@@ -443,7 +455,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(reviewObj.review[0]).toMatchObject(expectedOutput);
       });
   });
-  test("should respond with 201 and expected output if given extra properties", () => {
+  test("should respond with 200 code and expected output if given extra properties", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ inc_votes: 4, faveTrick: "kickflip" })
@@ -468,7 +480,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(reviewObj.review[0]).not.toHaveProperty("review");
       });
   });
-  test("should respond with 400 if required property is missing", () => {
+  test("should respond with 400 code if required property is missing", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ increase_by: 4 })
@@ -477,7 +489,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(err.body.message).toBe("Invalid request format");
       });
   });
-  test("should respond with 404 if review ID does not exist", () => {
+  test("should respond with 404 code if review ID does not exist", () => {
     return request(app)
       .patch("/api/reviews/90023")
       .send({ inc_votes: 4 })
@@ -486,7 +498,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(err.body.message).toBe(`Sorry, review ID not found`);
       });
   });
-  test("should respond with 400 if review ID is invalid", () => {
+  test("should respond with 400 code if review ID is invalid", () => {
     return request(app)
       .patch("/api/reviews/mushrooms")
       .send({ inc_votes: 4 })
@@ -498,7 +510,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
 });
 
 describe("DELETE: /api/comments/:comment_id", () => {
-  test("should return 204 (no content) and delete single comment by given ID", () => {
+  test("should respond with 204 code (no content) and delete single comment by given ID", () => {
     return request(app)
       .delete("/api/comments/2")
       .expect(204)
@@ -506,13 +518,13 @@ describe("DELETE: /api/comments/:comment_id", () => {
         expect(response.body).toEqual({});
       });
   });
-  test("should return 404 if queried with non-existent ID", () => {
+  test("should respond with 404 code if queried with non-existent ID", () => {
     return request(app)
       .delete("/api/comments/80085")
       .expect(404)
       .then((err) => expect(err.body.message).toBe("Comment ID not found"));
   });
-  test("should return 400 if queried with invalid ID", () => {
+  test("should respond with 400 code if queried with invalid ID", () => {
     return request(app)
       .delete("/api/comments/mushrooms")
       .expect(400)
