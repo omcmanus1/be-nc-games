@@ -2,7 +2,7 @@ const {
   selectReviews,
   selectSingleReview,
   selectReviewComments,
-  selectReviewId,
+  selectReviewById,
   updateReviewData,
   checkAvailableCategories,
 } = require("../models/reviews-models");
@@ -35,7 +35,7 @@ exports.getSingleReview = (req, res, next) => {
 
 exports.getReviewComments = (req, res, next) => {
   const { review_id } = req.params;
-  const checkReviewIdExists = selectReviewId(review_id);
+  const checkReviewIdExists = selectReviewById(review_id);
   const fetchRelevantComments = selectReviewComments(review_id);
   Promise.all([checkReviewIdExists, fetchRelevantComments])
     .then((comments) => {
