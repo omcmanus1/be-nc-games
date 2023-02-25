@@ -12,13 +12,13 @@ const {
 beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
 afterAll(() => db.end());
 
-describe("Error Handling", () => {
+describe("Generic Error Handling", () => {
   test("should respond with a 404 error if incorrect endpoint is specified", () => {
     return request(app)
       .get("/api/categorieeeees")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("Path Not Found");
+        expect(response.body.message).toBe("Path Not Found");
       });
   });
 });
@@ -443,7 +443,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(reviewObj.review[0]).toMatchObject(expectedOutput);
       });
   });
-  test("should respond with 201 and expected output if given extra properties", () => {
+  test("should respond with 200 and expected output if given extra properties", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ inc_votes: 4, faveTrick: "kickflip" })
