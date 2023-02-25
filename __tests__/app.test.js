@@ -497,10 +497,25 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("DELETE: /api/comments/:comment_id", () => {
+describe("DELETE: /api/comments/:comment_id", () => {
   test("should return 204 (no content) and delete single comment by given ID", () => {
-    return request(app).delete("/api/comments/2").expect(204);
-    // .then((response) => {
-    // });
+    return request(app)
+      .delete("/api/comments/2")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  test("should return 404 if queried with non-existent ID", () => {
+    return request(app)
+      .delete("/api/comments/80085")
+      .expect(404)
+      .then((err) => expect(err.body.message).toBe("Comment ID not found"));
+  });
+  test("should return 400 if queried with invalid ID", () => {
+    return request(app)
+      .delete("/api/comments/mushrooms")
+      .expect(400)
+      .then((err) => expect(err.body.message).toBe("Invalid ID provided"));
   });
 });

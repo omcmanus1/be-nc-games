@@ -39,3 +39,16 @@ exports.deleteSingleComment = (commentId) => {
   const queryString = `DELETE FROM comments WHERE comment_id = $1`;
   return db.query(queryString, [commentId]);
 };
+
+exports.selectCommentById = (commentId) => {
+  const queryString = `SELECT * FROM comments WHERE comment_id = $1`;
+  return db.query(queryString, [reviewId]).then((reviewCheck) => {
+    if (reviewCheck.rowCount === 0) {
+      return Promise.reject({
+        status_code: 404,
+        message: `Sorry, review ID not found`,
+      });
+    }
+    return reviewCheck.rows;
+  });
+};
