@@ -14,7 +14,7 @@ This is the backend portion of a board games rating app - created as a personal 
 
 ## Link To Hosted Version
 
-[/api page - lists current available endpoints with explanations and examples](https://nc-games-74ev.onrender.com/api)
+[/api page](https://nc-games-74ev.onrender.com/api) - lists current available endpoints with explanations and examples
 
 ## Setup Instructions
 
