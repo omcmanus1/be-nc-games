@@ -1,13 +1,4 @@
-exports.idNumberChecker = (id, idType) => {
-  if (isNaN(Number(id))) {
-    return Promise.reject({
-      status_code: 400,
-      message: `Invalid ${idType} ID provided`,
-    });
-  }
-};
-
-exports.checkforContent = (queryOuput, message) => {
+exports.checkForContent = (queryOuput, message) => {
   if (queryOuput.rowCount > 0) {
     return queryOuput.rows;
   } else {
@@ -16,4 +7,11 @@ exports.checkforContent = (queryOuput, message) => {
       message: message,
     });
   }
+};
+
+exports.promiseRejection = (code, message) => {
+  return Promise.reject({
+    status_code: code,
+    message: message,
+  });
 };
