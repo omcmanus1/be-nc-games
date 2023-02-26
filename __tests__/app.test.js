@@ -195,6 +195,22 @@ describe("GET: /api/reviews", () => {
         });
       });
   });
+  test("should respond with correct output when all 3 queries are specified", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity&sort_by=review_id&order=desc")
+      .expect(200)
+      .then((reviews) => {
+        const reviewObj = reviews.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        reviewObj.reviews.forEach((review) => {
+          expect(review).toMatchObject(reviewOutput);
+          expect(review.category).toBe("dexterity");
+        });
+        expect(reviewObj.reviews).toBeSortedBy("review_id", {
+          descending: true,
+        });
+      });
+  });
   test("should respond with 404 code if category has no reviews associated", () => {
     return request(app)
       .get("/api/reviews?category=children's+games")
