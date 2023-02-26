@@ -314,7 +314,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/234455/comments")
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe("Sorry, review ID not found");
+        expect(response.body.message).toBe("Review ID not found");
       });
   });
   test("should respond with 400 code if qeuried with invalid ID", () => {
@@ -398,7 +398,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "Not epic at all" })
       .expect(404)
       .then((err) => {
-        expect(err.body.message).toBe("Sorry, review ID not found");
+        expect(err.body.message).toBe("Review ID not found");
       });
   });
   test("should respond with 400 code if review ID is invalid", () => {
@@ -416,7 +416,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "ralphwiggum", body: "I'm learnding" })
       .expect(404)
       .then((err) => {
-        expect(err.body.message).toBe(`Sorry, user ID not found`);
+        expect(err.body.message).toBe(`User ID not found`);
       });
   });
 });
@@ -511,7 +511,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
       .send({ inc_votes: 4 })
       .expect(404)
       .then((err) => {
-        expect(err.body.message).toBe(`Sorry, review ID not found`);
+        expect(err.body.message).toBe(`Review ID not found`);
       });
   });
   test("should respond with 400 code if review ID is invalid", () => {

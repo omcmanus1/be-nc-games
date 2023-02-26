@@ -7,6 +7,8 @@ const {
   checkAvailableCategories,
 } = require("../models/reviews-models");
 
+const { promiseRejection } = require("../utils/error-utils");
+
 exports.getReviews = (req, res, next) => {
   let { category, sort_by, order } = req.query;
   checkAvailableCategories(category)
@@ -22,13 +24,11 @@ exports.getSingleReview = (req, res, next) => {
   const { review_id } = req.params;
   selectSingleReview(review_id)
     .then((review) => {
-      if (review.length === 0) {
-        return Promise.reject({
-          status_code: 404,
-          message: "Review ID not found",
-        });
+      if (review.length > 0) {
+        return res.status(200).send({ review });
+      } else {
+        return promiseRejection(404, "Review ID not found");
       }
-      return res.status(200).send({ review });
     })
     .catch((err) => next(err));
 };
@@ -38,9 +38,7 @@ exports.getReviewComments = (req, res, next) => {
   const checkReviewIdExists = selectReviewById(review_id);
   const fetchRelevantComments = selectReviewComments(review_id);
   Promise.all([checkReviewIdExists, fetchRelevantComments])
-    .then((comments) => {
-      res.status(200).send({ comments: comments[1] });
-    })
+    .then((comments) => res.status(200).send({ comments: comments[1] }))
     .catch((err) => next(err));
 };
 

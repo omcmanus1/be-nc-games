@@ -2,22 +2,13 @@ const db = require("../db/connection");
 const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
-
-const noContentRejection = (message) => {
-  return Promise.reject({
-    status_code: 404,
-    message: message,
-  });
-};
+const { checkForContent, promiseRejection } = require("../utils/error-utils");
 
 exports.checkAvailableCategories = (queryCat) => {
   return selectCategories().then((categories) => {
     availableCategories = categories.map((category) => category.slug);
     if (queryCat && !availableCategories.includes(queryCat)) {
-      return Promise.reject({
-        status_code: 404,
-        message: "Category does not exist",
-      });
+      return promiseRejection(404, "Category does not exist");
     }
     return queryCat;
   });
@@ -43,8 +34,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   queryString += `%s`;
   const sql = format(queryString, sort_by, order);
   return db.query(sql, queryParams).then((reviews) => {
-    if (reviews.rowCount > 0) return reviews.rows;
-    else return noContentRejection("No reviews for this category");
+    return checkForContent(reviews, "No reviews for this category");
   });
 };
 
@@ -79,22 +69,13 @@ exports.selectReviewComments = (reviewId) => {
 exports.selectReviewById = (reviewId) => {
   const queryString = `SELECT * FROM reviews WHERE review_id = $1`;
   return db.query(queryString, [reviewId]).then((reviewCheck) => {
-    if (reviewCheck.rowCount === 0) {
-      return Promise.reject({
-        status_code: 404,
-        message: `Sorry, review ID not found`,
-      });
-    }
-    return reviewCheck.rows;
+    return checkForContent(reviewCheck, "Review ID not found");
   });
 };
 
 exports.updateReviewData = (reviewId, increment) => {
   if (!increment) {
-    return Promise.reject({
-      status_code: 400,
-      message: `Invalid request format`,
-    });
+    return promiseRejection(400, "Invalid request format");
   }
   const queryString = `
   UPDATE reviews
@@ -105,12 +86,6 @@ exports.updateReviewData = (reviewId, increment) => {
   `;
   const queryParams = [increment, reviewId];
   return db.query(queryString, queryParams).then((review) => {
-    if (review.rowCount === 0) {
-      return Promise.reject({
-        status_code: 404,
-        message: `Sorry, review ID not found`,
-      });
-    }
-    return review.rows;
+    return checkForContent(review, "Review ID not found");
   });
 };

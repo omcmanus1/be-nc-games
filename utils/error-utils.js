@@ -1,17 +1,17 @@
-exports.idNumberChecker = (id, idType) => {
-  if (isNaN(Number(id))) {
+exports.checkForContent = (queryOuput, message) => {
+  if (queryOuput.rowCount > 0) {
+    return queryOuput.rows;
+  } else {
     return Promise.reject({
-      status_code: 400,
-      message: `Invalid ${idType} ID provided`,
+      status_code: 404,
+      message: message,
     });
   }
 };
 
-exports.checkIdExists = (queryOuput, idType) => {
-  if (queryOuput.rowCount === 0) {
-    return Promise.reject({
-      status_code: 404,
-      message: `Sorry, ${idType} ID not found`,
-    });
-  }
+exports.promiseRejection = (code, message) => {
+  return Promise.reject({
+    status_code: code,
+    message: message,
+  });
 };
