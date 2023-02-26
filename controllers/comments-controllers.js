@@ -4,6 +4,7 @@ const {
   deleteSingleComment,
 } = require("../models/comments-models");
 const { selectReviewById } = require("../models/reviews-models");
+const { checkforContent } = require("../utils/error-utils");
 
 exports.postSingleComment = (req, res, next) => {
   const commentObj = req.body;
@@ -22,12 +23,8 @@ exports.removeSingleComment = (req, res, next) => {
   const { comment_id } = req.params;
   deleteSingleComment(comment_id)
     .then((output) => {
-      if (output.rowCount === 0) {
-        return Promise.reject({
-          status_code: 404,
-          message: "Comment ID not found",
-        });
-      } else res.status(204).send();
+      return checkforContent(output, "Comment ID not found");
     })
+    .then(() => res.status(204).send())
     .catch((err) => next(err));
 };

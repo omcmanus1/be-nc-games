@@ -2,13 +2,7 @@ const db = require("../db/connection");
 const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
-
-const noContentRejection = (message) => {
-  return Promise.reject({
-    status_code: 404,
-    message: message,
-  });
-};
+const { checkforContent } = require("../utils/error-utils");
 
 exports.checkAvailableCategories = (queryCat) => {
   return selectCategories().then((categories) => {
@@ -43,8 +37,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   queryString += `%s`;
   const sql = format(queryString, sort_by, order);
   return db.query(sql, queryParams).then((reviews) => {
-    if (reviews.rowCount > 0) return reviews.rows;
-    else return noContentRejection("No reviews for this category");
+    return checkforContent(reviews, "No reviews for this category");
   });
 };
 
@@ -79,13 +72,7 @@ exports.selectReviewComments = (reviewId) => {
 exports.selectReviewById = (reviewId) => {
   const queryString = `SELECT * FROM reviews WHERE review_id = $1`;
   return db.query(queryString, [reviewId]).then((reviewCheck) => {
-    if (reviewCheck.rowCount === 0) {
-      return Promise.reject({
-        status_code: 404,
-        message: `Sorry, review ID not found`,
-      });
-    }
-    return reviewCheck.rows;
+    return checkforContent(reviewCheck, "Review ID not found");
   });
 };
 
@@ -105,12 +92,6 @@ exports.updateReviewData = (reviewId, increment) => {
   `;
   const queryParams = [increment, reviewId];
   return db.query(queryString, queryParams).then((review) => {
-    if (review.rowCount === 0) {
-      return Promise.reject({
-        status_code: 404,
-        message: `Sorry, review ID not found`,
-      });
-    }
-    return review.rows;
+    return checkforContent(review, "Review ID not found");
   });
 };

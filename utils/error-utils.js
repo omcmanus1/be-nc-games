@@ -7,11 +7,13 @@ exports.idNumberChecker = (id, idType) => {
   }
 };
 
-exports.checkIdExists = (queryOuput, idType) => {
-  if (queryOuput.rowCount === 0) {
+exports.checkforContent = (queryOuput, message) => {
+  if (queryOuput.rowCount > 0) {
+    return queryOuput.rows;
+  } else {
     return Promise.reject({
       status_code: 404,
-      message: `Sorry, ${idType} ID not found`,
+      message: message,
     });
   }
 };
