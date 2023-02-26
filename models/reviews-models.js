@@ -3,6 +3,13 @@ const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
 
+const noContentRejection = (message) => {
+  return Promise.reject({
+    status_code: 404,
+    message: message,
+  });
+};
+
 exports.checkAvailableCategories = (queryCat) => {
   return selectCategories().then((categories) => {
     availableCategories = categories.map((category) => category.slug);
@@ -36,13 +43,8 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
   queryString += `%s`;
   const sql = format(queryString, sort_by, order);
   return db.query(sql, queryParams).then((reviews) => {
-    if (reviews.rows.length === 0) {
-      return Promise.reject({
-        status_code: 404,
-        message: "No reviews for this category",
-      });
-    }
-    return reviews.rows;
+    if (reviews.rowCount > 0) return reviews.rows;
+    else return noContentRejection("No reviews for this category");
   });
 };
 
