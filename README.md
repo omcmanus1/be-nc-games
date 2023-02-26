@@ -1,4 +1,4 @@
-# NC GAMES: BoardG Games Ratings App
+# NC GAMES: Board Games Ratings App
 
 ## Background
 
