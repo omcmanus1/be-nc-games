@@ -1,15 +1,14 @@
 const express = require("express");
 const app = express();
 const apiRouter = require("./routes/api-router");
-const userRouter = require("./routes/users-router");
+const usersRouter = require("./routes/users-router");
+const categoriesRouter = require("./routes/categories-router");
 
 const {
   nonExistentPath404,
   errorHandler500,
   customErrorHandler,
 } = require("./controllers/error-handling-controllers");
-const { getEndpoints } = require("./controllers/endpoints-controllers");
-const { getCategories } = require("./controllers/categories-controllers");
 const {
   getReviews,
   getSingleReview,
@@ -20,13 +19,12 @@ const {
   postSingleComment,
   removeSingleComment,
 } = require("./controllers/comments-controllers");
-const { getUsers } = require("./controllers/users-controllers");
 
 app.use(express.json());
 
 app.use("/api", apiRouter);
-app.use("/api/users", userRouter);
-app.get("/api/categories", getCategories);
+app.use("/api/users", usersRouter);
+app.use("/api/categories", categoriesRouter);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getSingleReview);
 app.get("/api/reviews/:review_id/comments", getReviewComments);
