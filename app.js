@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const apiRouter = require("./routes/api-router");
+const userRouter = require("./routes/users-router");
 
 const {
   nonExistentPath404,
@@ -24,7 +25,7 @@ const { getUsers } = require("./controllers/users-controllers");
 app.use(express.json());
 
 app.use("/api", apiRouter);
-app.get("/api/users", getUsers);
+app.use("/api/users", userRouter);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getSingleReview);
