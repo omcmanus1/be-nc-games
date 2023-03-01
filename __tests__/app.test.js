@@ -72,6 +72,9 @@ describe.only("GET: /api/users/:username", () => {
         });
       });
   });
+  test("should respond with 404 code if passed a non-existent userame", () => {
+    return request(app).get("/api/users/hmoleman8008").expect(404);
+  });
 });
 
 describe("GET: /api/categories", () => {

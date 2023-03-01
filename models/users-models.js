@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkForContent } = require("../utils/error-utils");
 
 exports.selectUsers = () => {
   const queryString = `SELECT * FROM users`;
@@ -10,6 +11,6 @@ exports.selectUserByUsername = (username) => {
     SELECT * FROM USERS
     WHERE username = $1`;
   return db.query(queryString, [username]).then((user) => {
-    return user.rows;
+    return checkForContent(user, "Username not found");
   });
 };
