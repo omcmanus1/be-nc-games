@@ -2,6 +2,7 @@ const {
   insertSingleComment,
   selectUser,
   deleteSingleComment,
+  updateCommentData,
 } = require("../models/comments-models");
 const { selectReviewById } = require("../models/reviews-models");
 const { checkForContent } = require("../utils/error-utils");
@@ -14,6 +15,16 @@ exports.postSingleComment = (req, res, next) => {
   const insertCommentPromise = insertSingleComment(commentObj, review_id);
   Promise.all([checkReviewIdPromise, checkUserPromise, insertCommentPromise])
     .then((comment) => res.status(201).send({ comment: comment[2] }))
+    .catch((err) => next(err));
+};
+
+exports.patchSingleComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  updateCommentData(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
     .catch((err) => next(err));
 };
 

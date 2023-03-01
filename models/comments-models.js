@@ -25,14 +25,27 @@ exports.selectUser = (username) => {
   });
 };
 
-exports.deleteSingleComment = (commentId) => {
-  const queryString = `DELETE FROM comments WHERE comment_id = $1`;
-  return db.query(queryString, [commentId]);
-};
-
 exports.selectCommentById = (commentId) => {
   const queryString = `SELECT * FROM comments WHERE comment_id = $1`;
   return db.query(queryString, [commentId]).then((reviewCheck) => {
     return checkForContent(reviewCheck, "Review ID not found");
   });
+};
+
+exports.updateCommentData = (commentId, incVotes) => {
+  const queryString = `
+  UPDATE comments
+  SET votes = votes + $1
+  WHERE comment_id = $2
+  RETURNING *
+  `;
+  const queryParams = [incVotes, commentId];
+  return db.query(queryString, queryParams).then((comment) => {
+    return checkForContent(comment, "Comment ID not found");
+  });
+};
+
+exports.deleteSingleComment = (commentId) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1`;
+  return db.query(queryString, [commentId]);
 };

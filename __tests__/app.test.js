@@ -546,6 +546,30 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
+describe("PATCH: /api/comments/:comment_id", () => {
+  test("should respond with 200 code and the updated comment object when passed a valid comment ID and increment", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ inc_votes: 2 })
+      .expect(200)
+      .then((comment) => {
+        const commentObj = comment.body;
+        expect(commentObj).toBeInstanceOf(Object);
+        expect(commentObj).toHaveProperty("comment");
+        expect(commentObj.comment.length).toBe(1);
+        const expectedObj = {
+          comment_id: 2,
+          body: expect.any(String),
+          review_id: expect.any(Number),
+          author: "mallionaire",
+          votes: 15,
+          created_at: expect.any(String),
+        };
+        expect(commentObj.comment[0]).toMatchObject(expectedObj);
+      });
+  });
+});
+
 describe("DELETE: /api/comments/:comment_id", () => {
   test("should respond with 204 code (no content) and delete single comment by given ID", () => {
     return request(app)
