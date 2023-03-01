@@ -12,6 +12,16 @@
       }
     ]
   },
+  "GET /api/users/:username": {
+    "description": "serves a user object for the provided user ID",
+    "users": [
+      {
+        "username": "grumpy19",
+        "name": "Paul Grump",
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+      }
+    ]
+  },
   "GET /api/categories": {
     "description": "serves an array of all categories",
     "exampleResponse": {
@@ -27,7 +37,7 @@
     "description": "serves an array of all reviews - can include any combination of queries",
     "queries": ["category", "sort_by", "order (asc/desc)"],
     "exampleRequests": [
-      "/api/reviews?category=strategy", 
+      "/api/reviews?category=strategy",
       "/api/reviews?category=dexterity&sort_by=votes&order=desc"
     ],
     "exampleResponse": {
