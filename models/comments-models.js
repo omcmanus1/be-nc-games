@@ -47,5 +47,7 @@ exports.updateCommentData = (commentId, incVotes) => {
 
 exports.deleteSingleComment = (commentId) => {
   const queryString = `DELETE FROM comments WHERE comment_id = $1`;
-  return db.query(queryString, [commentId]);
+  return db.query(queryString, [commentId]).then((comment) => {
+    return checkForContent(comment, "Comment ID not found");
+  });
 };

@@ -5,7 +5,6 @@ const {
   updateCommentData,
 } = require("../models/comments-models");
 const { selectReviewById } = require("../models/reviews-models");
-const { checkForContent } = require("../utils/error-utils");
 
 exports.postSingleComment = (req, res, next) => {
   const commentObj = req.body;
@@ -31,9 +30,8 @@ exports.patchSingleComment = (req, res, next) => {
 exports.removeSingleComment = (req, res, next) => {
   const { comment_id } = req.params;
   deleteSingleComment(comment_id)
-    .then((output) => {
-      return checkForContent(output, "Comment ID not found");
+    .then(() => {
+      res.status(204).send();
     })
-    .then(() => res.status(204).send())
     .catch((err) => next(err));
 };
