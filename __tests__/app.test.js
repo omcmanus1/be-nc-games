@@ -56,6 +56,27 @@ describe("GET: /api/users", () => {
   });
 });
 
+describe.only("GET: /api/users/:username", () => {
+  test("should respond with 200 code and expected user object", () => {
+    return request(app)
+      .get("/api/users/dav3rid")
+      .expect(200)
+      .then((user) => {
+        const userOutput = user.body;
+        expect(userOutput).toBeInstanceOf(Object);
+        expect(userOutput.user.length).toBe(1);
+        expect(userOutput.user[0]).toMatchObject({
+          username: "dav3rid",
+          name: expect.any(String),
+          avatar_url: expect.any(String),
+        });
+      });
+  });
+  test("should respond with 404 code if passed a non-existent userame", () => {
+    return request(app).get("/api/users/hmoleman8008").expect(404);
+  });
+});
+
 describe("GET: /api/categories", () => {
   test("should respond with 200 code and correctly formatted objects array", () => {
     return request(app)
