@@ -2,9 +2,9 @@ const {
   insertSingleComment,
   selectUser,
   deleteSingleComment,
+  updateCommentData,
 } = require("../models/comments-models");
 const { selectReviewById } = require("../models/reviews-models");
-const { checkForContent } = require("../utils/error-utils");
 
 exports.postSingleComment = (req, res, next) => {
   const commentObj = req.body;
@@ -17,12 +17,21 @@ exports.postSingleComment = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+exports.patchSingleComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  updateCommentData(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch((err) => next(err));
+};
+
 exports.removeSingleComment = (req, res, next) => {
   const { comment_id } = req.params;
   deleteSingleComment(comment_id)
-    .then((output) => {
-      return checkForContent(output, "Comment ID not found");
+    .then(() => {
+      res.status(204).send();
     })
-    .then(() => res.status(204).send())
     .catch((err) => next(err));
 };

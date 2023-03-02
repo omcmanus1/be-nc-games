@@ -122,7 +122,7 @@
     }
   },
   "PATCH /api/reviews/:review_id": {
-    "description": "increments votes by submitted amount the provided review ID",
+    "description": "increments votes by submitted amount for the provided review ID, and returns the review",
     "requiredFormat": { "inc_votes": 4 },
     "exampleResponse": {
       "review": [
@@ -136,6 +136,22 @@
           "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
           "created_at": "2021-01-18T10:01:41.251Z",
           "votes": 9
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "increments votes by submitted amount for the provided comment ID, and returns the comment",
+    "requiredFormat": { "inc_votes": 4 },
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 64,
+          "body": "WHAT. A. GAME",
+          "review_id": 4,
+          "author": "tickle122",
+          "votes": 0,
+          "created_at": "2023-02-25T15:23:19.557Z"
         }
       ]
     }
