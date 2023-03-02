@@ -517,7 +517,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
         expect(reviewObj.review[0]).not.toHaveProperty("review");
       });
   });
-  test("should respond with 400 code if required property is missing", () => {
+  test("should respond with 400 code if inc_votes is not provided", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ increase_by: 4 })
@@ -608,6 +608,33 @@ describe("PATCH: /api/comments/:comment_id", () => {
           created_at: expect.any(String),
         };
         expect(commentObj.comment[0]).toMatchObject(expectedOutput);
+      });
+  });
+  test("should respond with 400 code if inc_votes is not provided", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ multiply_by: 20000 })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid request format");
+      });
+  });
+  test("should respond with 400 code if ID is invalid", () => {
+    return request(app)
+      .patch("/api/comments/blah")
+      .send({ inc_votes: 4 })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid ID provided");
+      });
+  });
+  test("should respond with 404 code if ID is not found", () => {
+    return request(app)
+      .patch("/api/comments/25566")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toBe("Comment ID not found");
       });
   });
 });

@@ -33,6 +33,9 @@ exports.selectCommentById = (commentId) => {
 };
 
 exports.updateCommentData = (commentId, incVotes) => {
+  if (!incVotes) {
+    return promiseRejection(400, "Invalid request format");
+  }
   const queryString = `
   UPDATE comments
   SET votes = votes + $1
