@@ -568,6 +568,48 @@ describe("PATCH: /api/comments/:comment_id", () => {
         expect(commentObj.comment[0]).toMatchObject(expectedObj);
       });
   });
+  test("should decrement the votes when passed a negative increment", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ inc_votes: -2 })
+      .expect(200)
+      .then((comment) => {
+        const commentObj = comment.body;
+        expect(commentObj).toBeInstanceOf(Object);
+        expect(commentObj).toHaveProperty("comment");
+        expect(commentObj.comment.length).toBe(1);
+        const expectedOutput = {
+          comment_id: 2,
+          body: expect.any(String),
+          review_id: expect.any(Number),
+          author: "mallionaire",
+          votes: 11,
+          created_at: expect.any(String),
+        };
+        expect(commentObj.comment[0]).toMatchObject(expectedOutput);
+      });
+  });
+  test("should respond with 200 code and expected output if given extra properties", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ inc_votes: 4, strength: 200 })
+      .expect(200)
+      .then((comment) => {
+        const commentObj = comment.body;
+        expect(commentObj).toBeInstanceOf(Object);
+        expect(commentObj).toHaveProperty("comment");
+        expect(commentObj.comment.length).toBe(1);
+        const expectedOutput = {
+          comment_id: 2,
+          body: expect.any(String),
+          review_id: expect.any(Number),
+          author: "mallionaire",
+          votes: 17,
+          created_at: expect.any(String),
+        };
+        expect(commentObj.comment[0]).toMatchObject(expectedOutput);
+      });
+  });
 });
 
 describe("DELETE: /api/comments/:comment_id", () => {
