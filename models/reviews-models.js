@@ -89,3 +89,42 @@ exports.updateReviewData = (reviewId, increment) => {
     return checkForContent(review, "Review ID not found");
   });
 };
+
+exports.insertSingleReview = (review) => {
+  const queryString = `
+  INSERT INTO reviews 
+    (owner, title, review_body, designer, category, review_img_url)
+  VALUES
+    ($1, $2, $3, $4, $5, $6)
+  RETURNING *
+  `;
+  const queryParams = [
+    review.owner,
+    review.title,
+    review.review_body,
+    review.designer,
+    review.category,
+    review.review_img_url,
+  ];
+  return db
+    .query(queryString, queryParams)
+    .then((review) => {
+      return review.rows;
+    })
+    .catch((err) => next(err));
+};
+
+exports.selectReviewWithCommentCount = () => {
+  const queryString = `
+  SELECT 
+    reviews.owner, reviews.title, reviews.review_body, 
+    reviews.designer, reviews.category, reviews.review_img_url,
+    reviews.votes, COUNT(comments.comment_id) AS comment_count 
+  FROM reviews 
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
+  WHERE reviews.review_id = 2
+  GROUP BY reviews.review_id
+  `;
+  return db.query(queryString).then((review) => review.rows);
+};

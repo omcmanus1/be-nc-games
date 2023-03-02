@@ -5,6 +5,7 @@ const {
   selectReviewById,
   updateReviewData,
   checkAvailableCategories,
+  insertSingleReview,
 } = require("../models/reviews-models");
 
 const { promiseRejection } = require("../utils/error-utils");
@@ -47,5 +48,14 @@ exports.patchSingleReview = (req, res, next) => {
   const { inc_votes } = req.body;
   updateReviewData(review_id, inc_votes)
     .then((review) => res.status(200).send({ review }))
+    .catch((err) => next(err));
+};
+
+exports.postSingleReview = (req, res, next) => {
+  const review = req.body;
+  insertSingleReview(review)
+    .then((review) => {
+      res.status(201).send({ review });
+    })
     .catch((err) => next(err));
 };

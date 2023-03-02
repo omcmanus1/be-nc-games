@@ -266,6 +266,27 @@ describe("GET: /api/reviews", () => {
   });
 });
 
+describe.only("POST: /api/reviews", () => {
+  test("should respond with 201 code and added review object", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        owner: "bainesface",
+        title: "Agricola: It's alright",
+        review_body: "Not bad.",
+        designer: "Uwe Rosenberg",
+        category: "euro game",
+        review_img_url:
+          "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
+      })
+      .expect(201)
+      .then((review) => {
+        const reviewObj = review.body;
+        console.log(reviewObj);
+      });
+  });
+});
+
 describe("GET: /api/reviews/:review_id", () => {
   test("should respond with 200 code and array property containing correct single review object", () => {
     return request(app)
