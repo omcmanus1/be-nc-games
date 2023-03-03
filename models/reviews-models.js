@@ -117,14 +117,14 @@ exports.insertSingleReview = (review) => {
 exports.selectReviewWithCommentCount = () => {
   const queryString = `
   SELECT 
-    reviews.owner, reviews.title, reviews.review_body, 
-    reviews.designer, reviews.category, reviews.review_img_url,
-    reviews.votes, COUNT(comments.comment_id) AS comment_count 
+    reviews.*, COUNT(comments.comment_id)::INT AS comment_count 
   FROM reviews 
   LEFT JOIN comments
   ON reviews.review_id = comments.review_id
   WHERE reviews.review_id = 2
   GROUP BY reviews.review_id
   `;
-  return db.query(queryString).then((review) => review.rows);
+  return db.query(queryString).then((review) => console.log(review.rows));
 };
+
+console.log(this.selectReviewWithCommentCount());
