@@ -90,6 +90,21 @@ exports.updateReviewData = (reviewId, increment) => {
   });
 };
 
+exports.selectReviewWithCommentCount = (reviewId) => {
+  const queryString = `
+  SELECT 
+    reviews.*, COUNT(comments.comment_id)::INT AS comment_count 
+  FROM reviews 
+  LEFT JOIN comments
+  ON reviews.review_id = comments.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
+  `;
+  return db.query(queryString, [reviewId]).then((review) => {
+    return review.rows;
+  });
+};
+
 exports.insertSingleReview = (review) => {
   const queryString = `
   INSERT INTO reviews 
@@ -109,22 +124,7 @@ exports.insertSingleReview = (review) => {
   return db
     .query(queryString, queryParams)
     .then((review) => {
-      return review.rows;
+      return this.selectReviewWithCommentCount(review.rows[0].review_id);
     })
     .catch((err) => next(err));
 };
-
-exports.selectReviewWithCommentCount = () => {
-  const queryString = `
-  SELECT 
-    reviews.*, COUNT(comments.comment_id)::INT AS comment_count 
-  FROM reviews 
-  LEFT JOIN comments
-  ON reviews.review_id = comments.review_id
-  WHERE reviews.review_id = 2
-  GROUP BY reviews.review_id
-  `;
-  return db.query(queryString).then((review) => console.log(review.rows));
-};
-
-console.log(this.selectReviewWithCommentCount());

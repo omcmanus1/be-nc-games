@@ -6,6 +6,7 @@ const {
   updateReviewData,
   checkAvailableCategories,
   insertSingleReview,
+  selectReviewWithCommentCount,
 } = require("../models/reviews-models");
 
 const { promiseRejection } = require("../utils/error-utils");

@@ -282,7 +282,22 @@ describe.only("POST: /api/reviews", () => {
       .expect(201)
       .then((review) => {
         const reviewObj = review.body;
-        console.log(reviewObj);
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj.review.length).toBe(1);
+        const expectedOutput = {
+          owner: "bainesface",
+          title: "Agricola: It's alright",
+          review_body: "Not bad.",
+          designer: "Uwe Rosenberg",
+          category: "euro game",
+          review_img_url:
+            "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
+          review_id: 14,
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: 0,
+        };
+        expect(reviewObj.review[0]).toMatchObject(expectedOutput);
       });
   });
 });
