@@ -3,6 +3,7 @@ const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
 const { checkForContent, promiseRejection } = require("../utils/error-utils");
+const { checkNewReviewFormat } = require("../utils/models-utils");
 
 exports.checkAvailableCategories = (queryCat) => {
   return selectCategories().then((categories) => {
@@ -106,6 +107,9 @@ exports.selectReviewWithCommentCount = (reviewId) => {
 };
 
 exports.insertSingleReview = (review) => {
+  if (!checkNewReviewFormat(review)) {
+    return promiseRejection(400, "Invalid review format");
+  }
   const queryString = `
   INSERT INTO reviews 
     (owner, title, review_body, designer, category, review_img_url)
