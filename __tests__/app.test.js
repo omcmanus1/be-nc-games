@@ -359,6 +359,23 @@ describe.only("POST: /api/reviews", () => {
         expect(err.body.message).toEqual("Invalid input provided");
       });
   });
+  test.only("should respond with 404 if owner is not found", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        owner: "milhouse",
+        title: "Agricola: It's alright",
+        review_body: "Not bad.",
+        designer: "Uwe Rosenberg",
+        category: "euro game",
+        review_img_url:
+          "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
+      })
+      .expect(404)
+      .then((err) => {
+        expect(err.body.message).toEqual("Owner not found");
+      });
+  });
 });
 
 describe("GET: /api/reviews/:review_id", () => {
