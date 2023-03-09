@@ -359,7 +359,22 @@ describe.only("POST: /api/reviews", () => {
         expect(err.body.message).toEqual("Invalid input provided");
       });
   });
-  test.only("should respond with 404 if owner is not found", () => {
+  test("should respond with 400 if title is not a string", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        owner: "bainesface",
+        title: 49324,
+        review_body: "Not bad.",
+        designer: "Uwe Rosenberg",
+        category: "euro game",
+        review_img_url:
+          "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
+      })
+      .expect(400)
+      .then((err) => console.log(err.body));
+  });
+  test("should respond with 404 if owner is not found", () => {
     return request(app)
       .post("/api/reviews")
       .send({
