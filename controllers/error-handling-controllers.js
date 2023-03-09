@@ -5,7 +5,7 @@ exports.nonExistentPath404 = (req, res, next) => {
 exports.customErrorHandler = (err, req, res, next) => {
   const psqlInvalidError = ["22P02"];
   const psqlNotFound = ["23503"];
-  const psqlInvalidInput = ["42601", "42703"];
+  const psqlInvalidInput = ["42601", "42703", "23502"];
   if (err.status_code && err.message) {
     res.status(err.status_code).send({ message: err.message });
   } else if (psqlInvalidError.includes(err.code)) {

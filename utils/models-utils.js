@@ -1,6 +1,10 @@
 const { promiseRejection } = require("./error-utils");
 
 exports.checkNewReviewFormat = (reviewObj) => {
+  console.log(reviewObj);
+  if (!reviewObj) {
+    return promiseRejection(400, "No review provided");
+  }
   const requiredProperties = [
     "owner",
     "title",
@@ -9,10 +13,7 @@ exports.checkNewReviewFormat = (reviewObj) => {
     "category",
     "review_img_url",
   ];
-  return requiredProperties.every((prop) => reviewObj.hasOwnProperty(prop));
+  if (!requiredProperties.every((prop) => reviewObj.hasOwnProperty(prop))) {
+    return promiseRejection(400, "Invalid review format");
+  }
 };
-
-// const ex1 = new Set([1, 2, 3, 4, 5, 6]);
-// const ex2 = new Set([1, 2, 3, 4, 5, 6]);
-
-// console.log(ex1 == ex2);

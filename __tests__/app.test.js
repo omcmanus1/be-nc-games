@@ -347,7 +347,16 @@ describe.only("POST: /api/reviews", () => {
       })
       .expect(400)
       .then((err) => {
-        expect(err.body.message).toEqual("Invalid review format");
+        expect(err.body.message).toEqual("Invalid input provided");
+      });
+  });
+  test("should return 400 if no body is provided", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send()
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toEqual("Invalid input provided");
       });
   });
 });

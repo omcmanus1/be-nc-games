@@ -107,9 +107,7 @@ exports.selectReviewWithCommentCount = (reviewId) => {
 };
 
 exports.insertSingleReview = (review) => {
-  if (!checkNewReviewFormat(review)) {
-    return promiseRejection(400, "Invalid review format");
-  }
+  // checkNewReviewFormat(review);
   const queryString = `
   INSERT INTO reviews 
     (owner, title, review_body, designer, category, review_img_url)
@@ -125,10 +123,7 @@ exports.insertSingleReview = (review) => {
     review.category,
     review.review_img_url,
   ];
-  return db
-    .query(queryString, queryParams)
-    .then((review) => {
-      return this.selectReviewWithCommentCount(review.rows[0].review_id);
-    })
-    .catch((err) => next(err));
+  return db.query(queryString, queryParams).then((review) => {
+    return this.selectReviewWithCommentCount(review.rows[0].review_id);
+  });
 };
