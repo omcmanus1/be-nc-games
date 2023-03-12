@@ -54,7 +54,7 @@ exports.patchSingleReview = (req, res, next) => {
 
 exports.postSingleReview = (req, res, next) => {
   const review = req.body;
-  insertSingleReview(review)
+  insertSingleReview(review, review.image_url)
     .then((review) => {
       res.status(201).send({ review });
     })

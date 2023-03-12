@@ -266,7 +266,7 @@ describe("GET: /api/reviews", () => {
   });
 });
 
-describe.only("POST: /api/reviews", () => {
+describe("POST: /api/reviews", () => {
   test("should respond with 201 code and added review object", () => {
     return request(app)
       .post("/api/reviews")
@@ -372,7 +372,9 @@ describe.only("POST: /api/reviews", () => {
           "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
       })
       .expect(400)
-      .then((err) => console.log(err.body));
+      .then((err) => {
+        expect(err.body.message).toBe("Invalid input provided");
+      });
   });
   test("should respond with 404 if owner is not found", () => {
     return request(app)
@@ -389,6 +391,37 @@ describe.only("POST: /api/reviews", () => {
       .expect(404)
       .then((err) => {
         expect(err.body.message).toEqual("Owner not found");
+      });
+  });
+  test("should default to chosen link if no image_url is provided", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        owner: "bainesface",
+        title: "Agricola: It's alright",
+        review_body: "Not bad.",
+        designer: "Uwe Rosenberg",
+        category: "euro game",
+      })
+      .expect(201)
+      .then((review) => {
+        const reviewObj = review.body;
+        expect(reviewObj).toBeInstanceOf(Object);
+        expect(reviewObj.review.length).toBe(1);
+        const expectedOutput = {
+          owner: "bainesface",
+          title: "Agricola: It's alright",
+          review_body: "Not bad.",
+          designer: "Uwe Rosenberg",
+          category: "euro game",
+          review_img_url:
+            "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif",
+          review_id: 14,
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: 0,
+        };
+        expect(reviewObj.review[0]).toMatchObject(expectedOutput);
       });
   });
 });

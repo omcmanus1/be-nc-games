@@ -106,8 +106,13 @@ exports.selectReviewWithCommentCount = (reviewId) => {
   });
 };
 
-exports.insertSingleReview = (review) => {
-  // checkNewReviewFormat(review);
+exports.insertSingleReview = (
+  review,
+  image_url = "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif"
+) => {
+  if (typeof review.title === "number") {
+    return promiseRejection(400, "Invalid input provided");
+  }
   const queryString = `
   INSERT INTO reviews 
     (owner, title, review_body, designer, category, review_img_url)
@@ -121,7 +126,7 @@ exports.insertSingleReview = (review) => {
     review.review_body,
     review.designer,
     review.category,
-    review.review_img_url,
+    image_url,
   ];
   return db.query(queryString, queryParams).then((review) => {
     return this.selectReviewWithCommentCount(review.rows[0].review_id);
