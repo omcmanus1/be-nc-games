@@ -26,11 +26,7 @@ exports.getSingleReview = (req, res, next) => {
   const { review_id } = req.params;
   selectSingleReview(review_id)
     .then((review) => {
-      if (review.length > 0) {
-        return res.status(200).send({ review });
-      } else {
-        return promiseRejection(404, "Review ID not found");
-      }
+      return res.status(200).send({ review });
     })
     .catch((err) => next(err));
 };

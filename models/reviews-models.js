@@ -52,7 +52,11 @@ exports.selectSingleReview = (reviewId) => {
   GROUP BY reviews.review_id
   `;
   return db.query(queryString, [reviewId]).then((review) => {
-    return review.rows;
+    if (review.rows.length > 0) {
+      return review.rows;
+    } else {
+      return promiseRejection(404, "Review ID not found");
+    }
   });
 };
 
