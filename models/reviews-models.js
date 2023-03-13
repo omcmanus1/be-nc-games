@@ -113,7 +113,7 @@ exports.insertSingleReview = (
   review,
   image_url = "https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif"
 ) => {
-  if (typeof review.title === "number") {
+  if (!isNaN(Number(review.title))) {
     return promiseRejection(400, "Invalid input provided");
   }
   const queryString = `

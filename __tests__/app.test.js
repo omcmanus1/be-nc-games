@@ -359,7 +359,7 @@ describe("POST: /api/reviews", () => {
         expect(err.body.message).toEqual("Invalid input provided");
       });
   });
-  test("should respond with 400 if title is not a string", () => {
+  test("should respond with 400 if title is a number", () => {
     return request(app)
       .post("/api/reviews")
       .send({
