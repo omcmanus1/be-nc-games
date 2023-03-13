@@ -3,7 +3,6 @@ const format = require("pg-format");
 
 const { selectCategories } = require("./categories-models");
 const { checkForContent, promiseRejection } = require("../utils/error-utils");
-const { checkNewReviewFormat } = require("../utils/models-utils");
 
 exports.checkAvailableCategories = (queryCat) => {
   return selectCategories().then((categories) => {
