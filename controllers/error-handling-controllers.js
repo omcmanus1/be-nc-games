@@ -5,8 +5,10 @@ exports.nonExistentPath404 = (req, res, next) => {
 exports.customErrorHandler = (err, req, res, next) => {
   const psqlInvalidError = ["22P02"];
   const psqlNotFound = ["23503"];
-  const psqlInvalidInput = ["42601", "42703"];
-  if (err.status_code && err.message) {
+  const psqlInvalidInput = ["42601", "42703", "23502"];
+  if (err.constraint === "reviews_owner_fkey") {
+    res.status(404).send({ message: "Owner not found" });
+  } else if (err.status_code && err.message) {
     res.status(err.status_code).send({ message: err.message });
   } else if (psqlInvalidError.includes(err.code)) {
     res.status(400).send({ message: "Invalid ID provided" });

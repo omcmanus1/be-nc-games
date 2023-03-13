@@ -4,6 +4,7 @@ const {
   getSingleReview,
   getReviewComments,
   patchSingleReview,
+  postSingleReview
 } = require("../controllers/reviews-controllers");
 
 const reviewsRouter = require("express").Router();
@@ -12,6 +13,7 @@ reviewsRouter.get("/", getReviews);
 reviewsRouter.get("/:review_id", getSingleReview);
 reviewsRouter.get("/:review_id/comments", getReviewComments);
 
+reviewsRouter.post("/", postSingleReview);
 reviewsRouter.post("/:review_id/comments", postSingleComment);
 reviewsRouter.patch("/:review_id/", patchSingleReview);
 

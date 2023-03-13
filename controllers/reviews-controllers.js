@@ -5,6 +5,8 @@ const {
   selectReviewById,
   updateReviewData,
   checkAvailableCategories,
+  insertSingleReview,
+  selectReviewWithCommentCount,
 } = require("../models/reviews-models");
 
 const { promiseRejection } = require("../utils/error-utils");
@@ -24,11 +26,7 @@ exports.getSingleReview = (req, res, next) => {
   const { review_id } = req.params;
   selectSingleReview(review_id)
     .then((review) => {
-      if (review.length > 0) {
-        return res.status(200).send({ review });
-      } else {
-        return promiseRejection(404, "Review ID not found");
-      }
+      return res.status(200).send({ review });
     })
     .catch((err) => next(err));
 };
@@ -47,5 +45,14 @@ exports.patchSingleReview = (req, res, next) => {
   const { inc_votes } = req.body;
   updateReviewData(review_id, inc_votes)
     .then((review) => res.status(200).send({ review }))
+    .catch((err) => next(err));
+};
+
+exports.postSingleReview = (req, res, next) => {
+  const review = req.body;
+  insertSingleReview(review, review.image_url)
+    .then((review) => {
+      res.status(201).send({ review });
+    })
     .catch((err) => next(err));
 };
