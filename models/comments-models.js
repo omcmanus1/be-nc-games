@@ -6,6 +6,9 @@ exports.insertSingleComment = (commentObj, reviewId) => {
   if (!requiredProperties.every((prop) => commentObj.hasOwnProperty(prop))) {
     return promiseRejection(400, "Invalid comment submitted");
   }
+  if (!commentObj.body) {
+    return promiseRejection(400, "No comment provided");
+  }
   const queryString = `
   INSERT INTO comments 
     (body, review_id, author)

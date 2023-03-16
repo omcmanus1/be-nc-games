@@ -600,6 +600,15 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(err.body.message).toBe(`User ID not found`);
       });
   });
+  test("should respond with 400 code if comment body is empty", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ username: "bainesface", body: "" })
+      .expect(400)
+      .then((err) => {
+        expect(err.body.message).toBe("No comment provided");
+      });
+  });
 });
 
 describe("PATCH: /api/reviews/:review_id", () => {
