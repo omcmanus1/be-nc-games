@@ -218,16 +218,18 @@ describe("GET: /api/reviews", () => {
   });
   test("should respond with correct output when all 3 queries are specified", () => {
     return request(app)
-      .get("/api/reviews?category=dexterity&sort_by=review_id&order=desc")
+      .get(
+        "/api/reviews?category=social+deduction&sort_by=created_at&order=desc"
+      )
       .expect(200)
       .then((reviews) => {
         const reviewObj = reviews.body;
         expect(reviewObj).toBeInstanceOf(Object);
         reviewObj.reviews.forEach((review) => {
           expect(review).toMatchObject(reviewOutput);
-          expect(review.category).toBe("dexterity");
+          expect(review.category).toBe("social deduction");
         });
-        expect(reviewObj.reviews).toBeSortedBy("review_id", {
+        expect(reviewObj.reviews).toBeSortedBy("created_at", {
           descending: true,
         });
       });
