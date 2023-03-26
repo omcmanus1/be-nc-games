@@ -6,10 +6,7 @@ const {
   updateReviewData,
   checkAvailableCategories,
   insertSingleReview,
-  selectReviewWithCommentCount,
 } = require("../models/reviews-models");
-
-const { promiseRejection } = require("../utils/error-utils");
 
 exports.getReviews = (req, res, next) => {
   let { category, sort_by, order } = req.query;
